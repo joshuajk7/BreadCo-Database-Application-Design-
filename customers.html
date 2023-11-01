@@ -14,8 +14,7 @@
 <p><a href="#" onClick="showAll()">Display all forms</a> </p>
 <table border="1" cellpadding="5">
   <tr>
-    <th><a href="#" onClick="newcustomers
-        ()">New</a></th>
+    <th><a href="#" onClick="newcustomers()">New</a></th>
     <th></th>
     <th>id</th>
     <th>Name</th>
@@ -27,10 +26,8 @@
     <th>zipCode</th>
   </tr>
   <tr>
-    <td><a href="#" onClick="updatecustomers
-        ('this.CustomerID')">Edit</a></td>
-    <td><a href="#" onclick="deletecustomers
-    ('this.CustomerID')">Delete</a></td>
+    <td><a href="#" onClick="updatecustomers('this.CustomerID')">Edit</a></td>
+    <td><a href="#" onclick="deletecustomers('this.CustomerID')">Delete</a></td>
     <td align="right" >1</td>
     <td >Jalen Hurts</td>
     <td align="right" >hurtsdonut@yahoo.com</td>
@@ -41,10 +38,8 @@
     <td>90071</td>
   </tr>
   <tr>
-    <td><a href="#" onClick="updatecustomers
-        ('this.CustomerID')">Edit</a></td>
-    <td><a href="#" onclick="deletecustomers
-    ('this.CustomerID')">Delete</a></td>
+    <td><a href="#" onClick="updatecustomers('this.CustomerID')">Edit</a></td>
+    <td><a href="#" onclick="deletecustomers('this.CustomerID')">Delete</a></td>
     <td align="right" >2</td>
     <td >Homer Simpson</td>
     <td align="right" >ilikedonuts@springfield.com</td>
@@ -55,10 +50,8 @@
     <td>97326</td>
   </tr>
   <tr>
-    <td><a href="#" onClick="updatecustomers
-        ('this.CustomerID')">Edit</a></td>
-    <td><a href="#" onclick="deletecustomers
-    ('this.CustomerID')">Delete</a></td>
+    <td><a href="#" onClick="updatecustomers('this.CustomerID')">Edit</a></td>
+    <td><a href="#" onclick="deletecustomers('this.CustomerID')">Delete</a></td>
     <td align="right" >3</td>
     <td >John Johnson</td>
     <td align="right" >pinkpanther@yahoo.com</td>
@@ -69,10 +62,8 @@
     <td>90247</td>
   </tr>
   <tr>
-    <td><a href="#" onClick="updatecustomers
-        ('this.CustomerID')">Edit</a></td>
-    <td><a href="#" onclick="deletecustomers
-    ('this.CustomerID')">Delete</a></td>
+    <td><a href="#" onClick="updatecustomers('this.CustomerID')">Edit</a></td>
+    <td><a href="#" onclick="deletecustomers('this.CustomerID')">Delete</a></td>
     <td align="right" >4</td>
     <td >Jonah Cliffe</td>
     <td align="right" >supergood@amc.com</td>
@@ -86,10 +77,8 @@
 <p>&nbsp;</p>
 </div> <!-- browse -->
 <div id="insert">
-    <form method="POST" id="addPlanet">
-        <legend><strong>Add customers
-
-        </strong></legend>
+    <form method="POST" id="addcustomers">
+        <legend><strong>Add customers</strong></legend>
           <fieldset class="fields">
             <label> name </label> <input type="text" name="Name">
             <label> email </label> <input type="text" name="email">
@@ -99,16 +88,13 @@
             <label> state </label> <input type="text" name="state">
             <label> zipCode </label> <input type="text" name="zipCode">
       </fieldset>
-          <input class="btn" type="submit" id="addcustomers
-          " value="Add customer
-          ">
+          <input class="btn" type="submit" id="addcustomers" value="Add customer">
           <input class="btn" type="button" value="cancel" onClick="browseCustomer()">
 	</form> 
 </div><!-- insert -->
 <p>&nbsp;</p>
 <div id="update">
-    <form method="POST" id="Updatecustomers
-    ">
+    <form method="POST" id="Updatecustomers">
         <legend><strong>Update customer
 
         </strong></legend>
@@ -123,30 +109,22 @@
             <label> state </label> <input type="text" name="state" value="Pennsylvania">
             <label> zipCode </label> <input type="text" name="zipCode" value="90071">
       </fieldset>
-          <input class="btn" type="submit" id="UpdateSavecustomers
-          " value="Save Update to Customer
-          ">
+          <input class="btn" type="submit" id="UpdateSavecustomers" value="Save Update to Customer">
           <input class="btn" type="button" value="cancel" onClick="browseCustomer()">
 	</form> 
 </div><!-- update -->
 <p>&nbsp;</p>
 <div id="delete" style="display: block">
-  <form method="POST" id="deletecustomers
-  ">
+  <form method="POST" id="deletecustomers">
       <legend><strong>Delete customer
-
       </strong></legend>
           <fieldset class="fields">
           <p>Are you sure you wish to delete the following?</p>
           <input type="hidden" name="CustomerID" id="deleteCustomerID" value="1">
-          <label><strong>ID:</strong></label> 1
-            <label> <strong>Name</strong> </label> Jalen Hurts hurtsdonut@yahoo.com
-            
-    </fieldset>
-    <input class="btn" type="submit" id="Deletecustomers
-    " value="Delete customer
-    ">
-          <input class="btn" type="button" value="cancel" onClick="browseCustomer()">
+          <label><strong>ID:</strong></label> 1 <label> <strong>Name</strong> </label> Jalen Hurts hurtsdonut@yahoo.com
+            </fieldset>
+      <input class="btn" type="submit" id="Deletecustomers" value="Delete customer">
+      <input class="btn" type="button" value="cancel" onClick="browseCustomer()">
   </form> 
 </div><!-- delete -->
 
