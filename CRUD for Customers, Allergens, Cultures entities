@@ -1,0 +1,43 @@
+Customers, Allergens, and Cultures CRUD 
+BROWSE 
+SELECT CustomersID, name, email, phoneNumber, streetAddress, city, state, zipCode FROM Customers;
+Or SELECT * FROM Customers;
+
+SELECT AllergensID, name FROM Allergens; 
+
+SELECT CulturesID, name from Cultures;
+
+CREATE 
+INSERT INTO `customers` (`customerID`, `name`, `email`, `phoneNumber`, `streetAddress`, `city`, `state`, `zipCode`) VALUES (':customerIDinput', ':nameInput', ':emailInput', ':phoneNumberInput', ':streetAddressInput', ':cityInput', ':stateInput', ‘:zipCodeInput’);
+
+INSERT INTO Allergens (name)
+VALUES (:nameInput ): 
+
+INSERT INTO Allergens (name)
+VALUES ( :nameInput): 
+
+	DELETE
+onclick="delete_Customers('pid')" 
+DELETE FROM Customers WHERE pid = :CustomersID_selected_from_browse_Customers_page;
+
+onclick="delete_Allergens('pid')" 
+DELETE FROM Allergens WHERE pid = :AllergensID_selected_from_browse_allergens_page;
+
+onclick="delete_Cultures('pid')" 
+DELETE FROM CulturesWHERE pid = :CulturesID_selected_from_browse_Cultures_page;
+
+UPDATE
+onclick="update_Customers('pid')"
+SELECT CustomersID, name, email, phoneNumber, streetAddress, city, state, zipCode 
+FROM Customers
+WHERE pid = :CustomersID_selected_from_browse_Customers_page;
+
+onclick="update_Allergens('pid')" 
+SELECT AllergensID, Name
+FROM Allergens 
+WHERE pid = :AllergensID_selected_from_browse_allergens_page;
+
+onclick="update_Cultures('pid')" 
+SELELCT CulturesID, Name
+FROM Cultures 
+WHERE pid = :CulturesID_selected_from_browse_Cultures_page;
