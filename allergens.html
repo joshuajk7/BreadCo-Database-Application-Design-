@@ -5,53 +5,92 @@
 </head>
 
 <body onload="browseallergens()">
-<h1>Home</h1>
+<h1> 
+  <IMG SRC="Logo.png" width = "85" height = "85"> 
+   Global Bread Co.
+</h1>
 
-[ <a href="home.html">HOME</a> | <a href="breadProducts.html">BREAD PRODUCTS</a> | <a href="customers.html">CUSTOMERS</a> 
+[ <a href="home.html">HOME</a> | <a href="bread.html">BREAD PRODUCTS</a> | <a href="customers.html">CUSTOMERS</a> 
 | <a href="sales.html">SALES</a> | <a href="cultures.html">CULTURES</a> | <a href="allergens.html">ALLERGENS</a> ]
 
 <div id="browse">
-<p><a href="#" onClick="showAll()">Display all forms</a> </p>
-<table border="1" cellpadding="5">
-  <tr>
-    <th></th>
-    <th>id</th>
-    <th>Name</th>
-  </tr>
-  <tr>
-    <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
-    <td align="right" >1</td>
-    <td >gluten</td>
-  </tr>
-  <tr>
-    <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
-    <td align="right" >2</td>
-    <td >wheat</td>
-  </tr>
-  <tr>
-    <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
-    <td align="right" >3</td>
-    <td >milk</td>
-  </tr>
-  <tr>
-    <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
-    <td align="right" >4</td>
-    <td >eggs</td>
-  </tr>
-  <tr>
-    <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
-    <td align="right" >5</td>
-    <td >soy</td>
-  </tr>
-  <tr>
-    <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
-    <td align="right" >6</td>
-    <td >yeast</td>
-  </tr>
-</table>
+  <br>
+  <legend style="font-size:20px"><strong>Allergens</strong></legend>
+  <a href="#" onClick="showAll()">Display all forms</a>
+  <table border="1" cellpadding="5">
+    <tr>
+      <th></th>
+      <th>id</th>
+      <th>Name</th>
+    </tr>
+    <tr>
+      <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
+      <td align="right" >1</td>
+      <td >gluten</td>
+    </tr>
+    <tr>
+      <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
+      <td align="right" >2</td>
+      <td >wheat</td>
+    </tr>
+    <tr>
+      <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
+      <td align="right" >3</td>
+      <td >milk</td>
+    </tr>
+    <tr>
+      <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
+      <td align="right" >4</td>
+      <td >eggs</td>
+    </tr>
+    <tr>
+      <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
+      <td align="right" >5</td>
+      <td >soy</td>
+    </tr>
+    <tr>
+      <td><a href="#" onclick="deleteallergens('this.AllergenID')">Delete</a></td>
+      <td align="right">6</td>
+      <td >yeast</td>
+    </tr>
+  </table>
+  <p>&nbsp;</p>
+</div>
 
+<div id="browse">
+  <legend style="font-size:20px"><strong>Allergen(s) in Products</strong></legend>
+  <a href="#" onClick="showAll()">Display all forms</a>
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>ID</th>
+      <th>Bread Product</th>
+      <th>Allergen</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Baguette</td>
+      <td>Gluten</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Baguette</td>
+      <td>Wheat</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Lavash</td>
+      <td>Wheat</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Ciabatta</td>
+      <td>Wheat</td>
+    </tr>
+  </table>
 <p>&nbsp;</p>
 </div> <!-- browse -->
+
+
 <div id="insert">
     <form method="POST" id="addAllergens">
         <legend><strong>Add allergens</strong></legend>
