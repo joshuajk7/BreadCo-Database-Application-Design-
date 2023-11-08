@@ -21,12 +21,12 @@
     <th></th>
     <th>id</th>
     <th>Name</th>
-    <th>email</th>
-    <th>phoneNumber</th>
-    <th>streetAddress</th>
-    <th>city</th>
-    <th>state</th>
-    <th>zipCode</th>
+    <th>Email</th>
+    <th>Phone Number</th>
+    <th>Street Address</th>
+    <th>City</th>
+    <th>State</th>
+    <th>Zip Code</th>
   </tr>
   <tr>
     <td><a href="#" onClick="updatecustomers('this.CustomerID')">Edit</a></td>
@@ -84,12 +84,12 @@
         <legend><strong>Add customers</strong></legend>
           <fieldset class="fields">
             <label> name </label> <input type="text" name="Name">
-            <label> email </label> <input type="text" name="email">
-            <label> phoneNumber </label> <input type="text" name="phoneNumber">
-            <label> streetAddress </label> <input type="text" name="streetAddress">
-            <label> city </label> <input type="text" name="city">
-            <label> state </label> <input type="text" name="state">
-            <label> zipCode </label> <input type="text" name="zipCode">
+            <label> Email </label> <input type="text" name="Email">
+            <label> Phone Number </label> <input type="text" name="Phone Number">
+            <label> Street Address </label> <input type="text" name="Street Address">
+            <label> City </label> <input type="text" name="City">
+            <label> State </label> <input type="text" name="State">
+            <label> Zip Code </label> <input type="text" name="Zip Code">
       </fieldset>
           <input class="btn" type="submit" id="addcustomers" value="Add customer">
           <input class="btn" type="button" value="cancel" onClick="browseCustomer()">
@@ -105,12 +105,12 @@
           <input type="hidden" name="CustomerID" id="updateCustomerID" value="1">
           <label> ID: </label> 1
             <label> name </label> <input type="text" name="Name" value="Jalen Hurts">
-            <label> email </label> <input type="text" name="email" value="hurtsdonut@yahoo.com">
-            <label> phoneNumber </label> <input type="text" name="phoneNumber">
-            <label> streetAddress </label> <input type="text" name="streetAddress" value="322 Zimmerman Lane">
-            <label> city </label> <input type="text" name="city" value="Philadelphia">
-            <label> state </label> <input type="text" name="state" value="Pennsylvania">
-            <label> zipCode </label> <input type="text" name="zipCode" value="90071">
+            <label> Email </label> <input type="text" name="Email" value="hurtsdonut@yahoo.com">
+            <label> Phone Number </label> <input type="text" name="Phone Number">
+            <label> Street Address </label> <input type="text" name="Street Address" value="322 Zimmerman Lane">
+            <label> City </label> <input type="text" name="City" value="Philadelphia">
+            <label> State </label> <input type="text" name="State" value="Pennsylvania">
+            <label> Zip Code </label> <input type="text" name="Zip Code" value="90071">
       </fieldset>
           <input class="btn" type="submit" id="UpdateSavecustomers" value="Save Update to Customer">
           <input class="btn" type="button" value="cancel" onClick="browseCustomer()">
@@ -124,7 +124,7 @@
           <fieldset class="fields">
           <p>Are you sure you wish to delete the following?</p>
           <input type="hidden" name="CustomerID" id="deleteCustomerID" value="1">
-          <label><strong>ID:</strong></label> 1 <label> <strong>Name</strong> </label> Jalen Hurts hurtsdonut@yahoo.com
+          <label><strong>ID:</strong></label> 1 <label> <strong>Name</strong> </label> Jalen Hurts <label><strong>Email:</strong></label> hurtsdonut@yahoo.com
             </fieldset>
       <input class="btn" type="submit" id="Deletecustomers" value="Delete customer">
       <input class="btn" type="button" value="cancel" onClick="browseCustomer()">
