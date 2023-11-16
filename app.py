@@ -84,15 +84,20 @@ def sales(sales_create_count=1):
             for i in range(1, sales_create_count+1):
                 query = "INSERT INTO soldProducts(saleID, productID, qtySold, lineTotal) Values (%s, %s, %s, %s);"
                 cur = mysql.connection.cursor()
-                cur.execute(query, (len(sales_results)+1, int(cur.execute(f"(select productID from breadProducts where name = '{name_arr[i-1]}');")), qtySold_arr[i-1], lineTotal_arr[i-1]))
+                productID = db.execute_query(db_connection=db_connection, query = f"Select productID from breadProducts where name = '{name_arr[i-1]}';" )
+                productID = productID.fetchall()[0]['productID']  # [{:}] list of dictionaries format.
+                cur.execute(query, (len(sales_results)+1, productID, qtySold_arr[i-1], lineTotal_arr[i-1]))
                 mysql.connection.commit()
+
                 # Testing
+                #q = f"Select productID from breadProducts where name = '{name_arr[i-1]}';"
+                #cursor = db.execute_query(db_connection=db_connection, query=q)
+                #testing.append(cursor.fetchall())
+                #testing.append(int(cur.execute(f"(select productID from breadProducts where name = '{name_arr[i-1]}')"))) 
                 #cur = mysql.connection.cursor()
                 #query = f"(select productID from breadProducts where name = '{name_arr[i-1]}')"
                 #cursor = db.execute_query(db_connection=db_connection, query=query)
-                #testing.append(cursor.fetchall())
-            
-            #return json.dumps(testing)
+
             return redirect(url_for('sales'))
 
     return render_template('sales.html', sales=sales_results, soldProducts=soldProducts_results, customers=customers_results, products= products_results,count=sales_create_count)
