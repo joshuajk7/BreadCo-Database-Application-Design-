@@ -1,0 +1,199 @@
+{% extends "base_header.html" %}
+
+{% block content %}
+<div id="sales">
+  <p>&nbsp;</p>
+  <legend style="font-size:20px"><strong>Sales</strong></legend>
+
+<table border="1" cellpadding="5">
+  <tr>
+    <th>ID</th>
+    <th>Customer</th>
+    <th>Sale Total</th>
+    <th><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> <a href="#" onClick="newSale()">New</a></th>
+  </tr>
+
+  <!-- Iterates through each item in sales -->
+  {% for sale in sales %}
+  <tr>
+    {% for key in sale.keys() %}  
+      {% if key == "Sale Total" %}
+      <td align="right">${{ sale[key] }} </td>
+      {% else %}
+      <td align="right">{{ sale[key] }} </td>
+      {% endif %}
+    {% endfor %}
+  <td><a href="#" onClick="updateSale('this.saleID')"> <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width = "25" height = "25">Edit </a></td>
+  <td><a href="#" onclick="deleteSale('this.saleID')"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+  </tr>
+  {% endfor %}
+</table>
+<br>
+</div> <!-- sales --end -->
+
+
+<div id="Search">
+  <form method="POST" id="searchSale">
+    <legend style="font-size:20px"><strong>Search Sale</strong> <IMG SRC="{{url_for('static', filename='find_icon.png')}}" width = "25" height = "25"></legend>
+    <label>Sale ID</label> <input type="number" name="saleID">
+    <input class="btn" type="submit" id="searchSale" value="Find">
+  </form>
+</div>
+
+
+<div id="soldProducts">
+  <br>
+  <legend style="font-size:20px"><strong>Sold Products</strong></legend>
+<!-- Header for soldProducts Table -->
+<table border="1" cellpadding="5">
+  <tr>
+    <th>ID</th>
+    <th>SaleID</th>
+    <th>Product Name</th>
+    <th>Quantity Sold</th>
+    <th>Line Total</th>
+  </tr>
+  <!-- Iterates through each item in soldProducts -->
+  {% for sold in soldProducts %}
+  <tr>
+    {% for key in sold.keys() %}  
+      {% if key == "lineTotal" %}
+      <td align="right">${{ sold[key] }} </td>
+      {% else %}
+      <td align="right">{{ sold[key] }} </td>
+      {% endif %}
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+<br>
+</div> <!-- soldProducts -- end -->
+
+
+<div id="insert">
+  <br>
+  <form method="POST" name="addSale" id="addSale" action="/sales#addSale">
+    <legend style="font-size:20px"><strong>Add a Sale<IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
+      <fieldset class="fields">
+      <table cellpadding="10">
+        <tr>
+          <td>
+            <label for="customer">Customer</label>
+            <select name="customer" id="customer">
+              {% for customer in customers %}
+              <option value={{ customer['customerID'] }}>{{ customer['customerID'] }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        {% for i in range(1, count+1) %} 
+        <tr>
+          <td>
+            <label for="bread">Product Name </label>
+            <select name="bread_{{i}}" id="bread">
+              {% for product in products %}
+              <option value="{{product['name']}}">"{{product['name']}}"</option>
+              {% endfor %}
+            </select>
+          </td>
+          <td>
+            <label>Quantity Sold</label> 
+            <input type="number" name="qtySold_{{i}}" required min="1"> {{ i }}
+          </td>
+          <td>
+            <label>Line Total</label> 
+            <input type="number" name="lineTotal_{{i}}" required step=0.01 min=0.01> {{ i }}
+          </td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <p> <strong>**Note** <br> Pressing Add a Product or Cancel Adding will erase input. Please add all boxes before entering data.</strong></p>
+        </tr>
+        <tr>
+          <td>
+            <input type="hidden" name="submitSale" value={{count}}>
+            <input type="submit" value ="Add this Sale to the Database">
+          </td>
+        </tr>
+  </form>
+        <tr>
+        <form method="POST" name="addSale" id="addSale" action="/sales#addSale">
+          <td align="center">
+            Products : {{ count }}
+              <input type="hidden" name="soldProduct" value={{count+1}}>
+              <input type="submit" value ="Add a Product to this Sale">
+          </td>
+        </form>
+        {% if count > 1 %}
+        </form>
+        <form method="POST" name="addSale" id="addSale" action="/sales#addSale">
+          <td align="center">
+              <input type="hidden" name="removeProduct" value={{count-1}}>
+              <input type="submit" value ="Cancel Adding this Product">
+          </td>
+        </tr>
+        </form>
+        {% endif %}
+        </tr>
+      </table>
+      </fieldset>
+</div><!-- insert -- end -->
+
+
+<div id="update">
+  <br>
+  <form method="POST" id="updateSale">
+    <legend style="font-size:20px"><strong>Update a Sale<IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width = "25" height = "25"></strong></legend>
+      <fieldset class="fields">
+      <table cellpadding="10">
+        <tr>
+          <td>
+            <label for="bread">Sale ID</label>
+              <select name="sale" id="sale">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </td>
+        </tr>
+        <tr>
+          <td><label>Product Name</label> <input type="name" name="Product Name"></td> 
+          <td><label>Quantity Sold</label> <input type="number" name="Quantity Sold"></td>
+          <td><label>Line Total</label> <input type="number" name="Line Total"></td>
+          <td>
+            <label for="bread">Customer</label>
+            <select name="sale" id="sale">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="3">4</option>
+            </select>
+          </td>
+        <tr>
+          <td><label>Sale Total</label> <input type="number" name="Sale Total"></td> 
+          <td align="center"><input class="btn" type="button" value="Add Product to Sale"></td>
+        </tr>
+      </table>
+      </fieldset>
+      <input class="btn" type="button" value="Update Sale">
+      <input class="btn" type="button" value="Cancel" onClick="browseProduct()">
+  </form>
+</div><!-- update -- end -->
+
+
+<div id="delete" style="display: block">
+  <form method="POST" id="deleteSale">
+  <legend style="font-size:20px"><strong>Delete Sale <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25"></strong></legend>
+    <fieldset class="fields">
+      <label for="bread">Sale ID</label>
+      <select name="saleID" id="sale">
+        <option value="saleID_1">1</option>
+        <option value="saleID_2">2</option>
+        <option value="saleID_3">3</option>
+      </select>
+    </fieldset>
+    <input class="btn" type="submit" id="DeleteProduct" value="Delete Sale">
+          <input class="btn" type="button" value="Cancel" onClick="browseSales()">
+  </form> 
+</div><!-- delete -- end -->
+{% endblock %}
