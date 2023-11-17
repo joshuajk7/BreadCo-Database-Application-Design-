@@ -162,15 +162,24 @@
               </select>
             </td>
           </form>
-        {% endif %}
+          {% endif %}
 
-        {% if update_sales_results != 0 %}
-        <tr>
-            <td>
-              <h2> <u>Sale {{ sale_id }}</u></h2>
-            </td>
+          {% if update_sales_results != 0 %}
+          <tr>
+            <form method="POST" name="updateSale" action="/sales">
+              <td>
+                <label for="updateSaleID">Sale ID</label>
+                <select name="updateSaleID" id="updateSaleID">
+                  {% for sale in sales %}
+                    {% if sale['saleID'] == sale_id %}
+                      <option value={{ sale['saleID'] }} SELECTED>{{ sale['saleID'] }}</option>
+                    {% else %}
+                      <option value={{ sale['saleID'] }}>{{ sale['saleID'] }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </td>
 
-          <form method="POST" name="updateSale" action="/sales#updateSale">
           <td>
             <label for="customer">Customer</label>
             <select name="customer" id="customer">
@@ -189,7 +198,6 @@
               {% endfor %}
             </select>
           </td>
-          Test: {{ cust_name }}
         </tr>
 
         {% for update in update_sales_results %}
@@ -221,10 +229,10 @@
         {% endfor %}
         {% endif %}
 
-        {% if update_sales_results != 0 %}
+        saleID : {{ saleIDP.current }}
         <tr>
           <td>
-            <input type="hidden" name="updateSaleID" id="updateSaleID" value={{ sale_id }}>
+            <input type="hidden" name="updateSale" id="updateSale" value={{ saleIDP.current }}>
             <input type="hidden" name="updateLength" id="updateSale" value={{ boxes.current }}>
             <input type="submit" value ="Update this Sale">
           </td>
@@ -236,7 +244,6 @@
             <input type="submit" value="Cancel Updating Sale">
           </td>
         </form>
-        {% endif %}
         </tr>
 
 </div><!-- update -- end -->

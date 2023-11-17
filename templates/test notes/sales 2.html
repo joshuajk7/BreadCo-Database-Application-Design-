@@ -10,7 +10,7 @@
     <th>ID</th>
     <th>Customer</th>
     <th>Sale Total</th>
-    <th><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> <a href="/sales#addSale" >New</a></th>
+    <th><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> <a href="#" onClick="newSale()">New</a></th>
   </tr>
 
   <!-- Iterates through each item in sales -->
@@ -68,6 +68,7 @@
 <br>
 </div> <!-- soldProducts -- end -->
 
+
 <div id="insert">
   <br>
   <form method="POST" name="addSale" id="addSale" action="/sales#addSale">
@@ -113,7 +114,6 @@
             <input type="submit" value ="Add this Sale to the Database">
           </td>
         </tr>
-
   </form>
         <tr>
         <form method="POST" name="addSale" id="addSale" action="/sales#addSale">
@@ -144,12 +144,8 @@
     <legend style="font-size:20px"><strong>Update a Sale<IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width = "25" height = "25"></strong></legend>
       <fieldset class="fields">
       <table cellpadding="10">
-        {% set boxes = namespace() %}
-        {% set saleIDP = namespace() %}
-
-        {% if update_sales_results == 0 %}
         <tr>
-          <form method="POST" name="loadSale" id="loadSale" action="/sales#updateSale">
+          <form method="POST" name="updateSale" action="/sales#updateSale">
             <td>
               <input type="submit" value ="Auto-Populate (Based on Sale ID)">
             </td>
@@ -162,83 +158,46 @@
               </select>
             </td>
           </form>
-        {% endif %}
-
-        {% if update_sales_results != 0 %}
-        <tr>
-            <td>
-              <h2> <u>Sale {{ sale_id }}</u></h2>
-            </td>
-
           <form method="POST" name="updateSale" action="/sales#updateSale">
           <td>
             <label for="customer">Customer</label>
             <select name="customer" id="customer">
-              {% set cust_name = namespace() %}
-              {% for sale in sales %}
-                {% if sale["saleID"] == sale_id %}
-                  {% set cust_name.current = sale['Customer'] %}
-                {% endif %}
-              {% endfor %}
               {% for customer in customers %}
-                {% if customer['name'] == cust_name.current %}
-                <option value={{ customer['customerID'] }} SELECTED>{{ customer['customerID'] }}</option>
-                {% else %}
                 <option value={{ customer['customerID'] }}>{{ customer['customerID'] }}</option>
-                {% endif %}
               {% endfor %}
             </select>
           </td>
-          Test: {{ cust_name }}
         </tr>
-
-        {% for update in update_sales_results %}
-          {% set boxes.current = loop.length %}
+        {% for i in range(1, count+1) %} 
         <tr>
           <td>
-            <label for="bread">Product Name</label>
-            <select name="bread_{{loop.index}}" id="bread">
-              
+            <label for="bread">Product Name </label>
+            <select name="bread_{{i}}" id="bread">
               {% for product in products %}
-              {% if product['productID'] == update['productID'] %}
-              <option value= "{{ product['productID'] }}" SELECTED> {{ product['productID'] }}</option>
-              {% else %}
-              <option value= "{{ product['productID'] }}"> {{ product['productID'] }}</option>
-              {% endif %}
+              <option value="{{product['name']}}">{{product['name']}}</option>
               {% endfor %}
             </select>
           </td>
-
           <td>
             <label>Quantity Sold</label> 
-            <input type="number" name="qtySold_{{loop.index}}" required min="1" value={{ update['qtySold'] }}></input>
+            <input type="number" name="qtySold_{{i}}" required min="1"> {{ i }}
           </td>
           <td>
             <label>Line Total</label> 
-            <input type="number" name="lineTotal_{{loop.index}}" required step=0.01 min=0.01 value={{ update['lineTotal'] }}>
+            <input type="number" name="lineTotal_{{i}}" required step=0.01 min=0.01> {{ i }}
           </td>
         </tr>
         {% endfor %}
-        {% endif %}
-
-        {% if update_sales_results != 0 %}
+        <tr>
+          <p> <strong>**Note** <br> Pressing Add a Product or Cancel Adding will erase input. Please add all boxes before entering data.</strong></p>
+        </tr>
         <tr>
           <td>
-            <input type="hidden" name="updateSaleID" id="updateSaleID" value={{ sale_id }}>
-            <input type="hidden" name="updateLength" id="updateSale" value={{ boxes.current }}>
-            <input type="submit" value ="Update this Sale">
+            <input type="hidden" name="submitSale" value={{count}}>
+            <input type="submit" value ="Add this Sale to the Database">
           </td>
-        </form>
-        
-        <form method="POST" name="cancelUpdate" action="/sales#updateSale">
-          <td>
-            <input type="hidden" name="cancelUpdate" id="cancelUpdate" value="True">
-            <input type="submit" value="Cancel Updating Sale">
-          </td>
-        </form>
-        {% endif %}
         </tr>
-
+        </form>
 </div><!-- update -- end -->
 
 

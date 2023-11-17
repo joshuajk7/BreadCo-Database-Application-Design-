@@ -58,14 +58,18 @@ def sales(sales_create_count=1, update_sales_results=0, saleID=0):
             sales_create_count=int(request.form['soldProduct'])
         elif request.form.get('removeProduct'):
             sales_create_count=int(request.form['removeProduct'])
-
         elif request.form.get('submitSale'):
+            sales_create_count=int(request.form['submitSale'])
+
+        if request.form.get('submitSale'):
             ### Gather Add Data, put all data in array. Check for Discrepancies.
-            sales_create_count = int(request.form['submitSale'])
-            customer = request.form['customer']
+            sales_create_count=int(request.form['submitSale'])
+            saleID = int(request.form.get('getSaleID'))
+            customer = int(request.form['customer']) ## Trying to convert as INT
             name_arr = []
             qtySold_arr = []
             lineTotal_arr = []
+            return saleID
 
             for i in range(1, sales_create_count+1):
                 name_arr.append(request.form.get("bread_"+str(i)))
@@ -81,11 +85,6 @@ def sales(sales_create_count=1, update_sales_results=0, saleID=0):
             ### Add into soldProducts
             testing = []
             for i in range(1, sales_create_count+1):
-                #### Get SaleID from Recent Insert
-                query = "SELECT max(saleID) from sales;"
-                cursor = db.execute_query(db_connection=db_connection, query=query)
-                saleID = cursor.fetchall()[0]['max(saleID)']
-
                 query = "INSERT INTO soldProducts(saleID, productID, qtySold, lineTotal) Values (%s, %s, %s, %s);"
                 cur = mysql.connection.cursor()
                 productID = db.execute_query(db_connection=db_connection, query = f"Select productID from breadProducts where name = '{name_arr[i-1]}';" )
@@ -111,34 +110,34 @@ def sales(sales_create_count=1, update_sales_results=0, saleID=0):
             cursor = db.execute_query(db_connection=db_connection, query=query)
             update_sales_results = cursor.fetchall()
         # Gather Information to Update
-        elif request.form.get('updateLength'):
+        else:
             boxes = int(request.form.get('updateLength'))
-            saleID = int(request.form.get('updateSaleID'))
-            customerID = request.form.get('customer')
+            saleID = int(request.form.get('updateSale'))
+            customer = request.form.get('customer')
             name_arr = []
             qtySold_arr = []
             lineTotal_arr = []
+            # error here, because there is no length of this parttion?
 
             for i in range(1, boxes+1):
                 name_arr.append(request.form.get("bread_"+str(i)))
                 qtySold_arr.append(request.form.get("qtySold_"+str(i)))
                 lineTotal_arr.append(round(float(request.form.get("lineTotal_"+str(i))), 2))
-            
 
             ### Update Sale
             query = "UPDATE sales SET customerID = %s, saleTotal = %s WHERE saleID = %s;"
             cur = mysql.connection.cursor()
-            cur.execute(query, (customerID, sum(lineTotal_arr), saleID))
+            cur.execute(query, (customer, sum(lineTotal_arr), saleID))
             mysql.connection.commit()
             
             ### Add into soldProducts
             for i in range(1, boxes+1):
-                query = "UPDATE soldProducts SET productID = %s, qtySold = %s, lineTotal = %s WHERE saleID = %s;"
+                query = "UPDATE soldProducts SET saleID = %s, productID = %s, qtySold = %s, lineTotal = %s;"
                 cur = mysql.connection.cursor()
                 #productID = db.execute_query(db_connection=db_connection, query = f"Select productID from breadProducts where name = '{name_arr[i-1]}';" )
                 #productID = productID.fetchall()[0]['productID']  # [{:}] list of dictionaries format.
                 ## name_arr is already in product IDs for this Update Function.
-                cur.execute(query, (name_arr[i-1], qtySold_arr[i-1], lineTotal_arr[i-1], saleID))
+                cur.execute(query, (saleID, name_arr[i-1], qtySold_arr[i-1], lineTotal_arr[i-1]))
                 mysql.connection.commit()
             
             return redirect(url_for('sales'))
