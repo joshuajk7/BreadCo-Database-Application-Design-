@@ -1,128 +1,64 @@
-<html>
-<head>
-<title>Global Bread Co.</title>
-<link href="style.css" rel="stylesheet" type="text/css" />
-</head>
-
-<body onload="browseAllergens()">
-<h1> 
-  <IMG SRC="Logo.png" width = "85" height = "85"> 
-   Global Bread Co.
-</h1>
-
-[ <a href="home.html">HOME</a> | <a href="bread.html">BREAD PRODUCTS</a> | <a href="customers.html">CUSTOMERS</a> 
-| <a href="sales.html">SALES</a> | <a href="cultures.html">CULTURES</a> | <a href="allergens.html">ALLERGENS</a> ]
+{% extends "layout.html" %}
+{% block title %} Allergens Page {% endblock %}
 
 
-<div id="browse">
-  <p>&nbsp;</p>
-  <legend style="font-size:20px"><strong>Allergens</strong></legend>
-  <a href="#" onClick="showAll()">Display all forms</a>
-  <table border="1" cellpadding="5">
-    <tr>
-      <th>id</th>
-      <th>Name</th>
-      <th><IMG SRC="new_icon.png" width = "25" height = "25"> <a href="#" onClick="newAllergen()">New</a></th>
-    </tr>
-    <tr>
-      <td align="right" >1</td>
-      <td >gluten</td>
-      <td><a href="#" onclick="deleteallergens('this.AllergenID')"><IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
-    </tr>
-    <tr>
-      <td align="right" >2</td>
-      <td >wheat</td>
-      <td><a href="#" onclick="deleteallergens('this.AllergenID')"><IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
-    </tr>
-    <tr>
-      <td align="right" >3</td>
-      <td >milk</td>
-      <td><a href="#" onclick="deleteallergens('this.AllergenID')"><IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
-    </tr>
-    <tr>
-      <td align="right" >4</td>
-      <td >eggs</td>
-      <td><a href="#" onclick="deleteallergens('this.AllergenID')"><IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
-    </tr>
-    <tr>
-      <td align="right" >5</td>
-      <td >soy</td>
-      <td><a href="#" onclick="deleteallergens('this.AllergenID')"><IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
-    </tr>
-    <tr>
-      <td align="right">6</td>
-      <td >yeast</td>
-      <td><a href="#" onclick="deleteallergens('this.AllergenID')"><IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
-    </tr>
-  </table>
-  <em>Note: an allergen cannot be deleted if associated with a bread.</em>
-  <br>
-</div>
+{% block content %} 
 
-<div id="browse">
-  <legend style="font-size:20px"><strong>Allergen(s) in Products</strong></legend>
-  <a href="#" onClick="showAll()">Display all forms</a>
-  <table border="1" cellpadding="5">
-    <tr>
-      <th>ID</th>
-      <th>Bread Product</th>
-      <th>Allergen</th>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>Baguette</td>
-      <td>Gluten</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>Baguette</td>
-      <td>Wheat</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>Lavash</td>
-      <td>Wheat</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>Ciabatta</td>
-      <td>Wheat</td>
-    </tr>
-  </table>
-</div> <!-- browse -->
+<script>
+     function deleteAllergen(allergenID) {
+      if (confirm("Are you sure you want to delete this allergen?")) {
+          // Make an AJAX request to the server to delete the allergen
+          var xhr = new XMLHttpRequest();
+          
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === XMLHttpRequest.DONE) {
+                  if (xhr.status === 200) {
+                      // Successful response from the server
+                      alert("Allergen successfully deleted");
+                      // You might want to reload the page or update the UI here
+                      location.reload(); // This reloads the page; you can replace it with more sophisticated UI updates
+                  } else {
+                      // Handle error response from the server
+                      alert("Error deleting allergen");
+                  }
+              }
+          };
+          
+          xhr.open("DELETE", "/allergens/" + allergenID, true);
+          xhr.send();
+      }
+  }
+</script>
 
-<div id="Search">
-  <form method="POST" id="searchAllergen">
-    <legend style="font-size:20px"><strong>Search Allergen</strong> <IMG SRC="find_icon.png" width = "25" height = "25"></legend>
-    <label>Allergen Name</label> <input type="text" name="Name">
-    <input class="btn" type="submit" id="searchAllergen" value="Find">
-</div> <!-- Search -->
 
+<h2>Allergens</h2>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th><IMG SRC="new_icon.png" width = "25" height = "25"> <a href="#" onClick="newAllergen()">New</a></th>
+    </tr>
+    {% for item in allergens %}
+    <tr>
+        <td>{{ item[0] }}</td>
+        <td>{{ item[1] }}</td>
+        <td><a href="#" onclick="deleteAllergen({{ item[0] }})"> <IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!--Form to add a new allergen-->
 <div id="insert">
     <br>
-    <form method="POST" id="addAllergen">
-        <legend><strong>Add Allergen<IMG SRC="new_icon.png" width = "25" height = "25"></strong></legend>
-          <fieldset class="fields">
-            <label> name </label> <input type="text" name="Name">
-      </fieldset>
-          <input class="btn" type="submit" id="addAllergen" value="Add allergen">
-          <input class="btn" type="button" value="cancel" onClick="browseAllergen()">
-	</form> 
-</div><!-- insert -->
+    <form method="POST" id="addAllergen" action= "/allergens">
+        <legend><strong> Add Allergen <IMG SRC = "new_icon.png" width = "25" height = "25"></strong></legend>
+            <fieldset class="fields">
+                <label for="name"> Name </label> <input type="text" name="name">
 
-<div id="delete" style="display: block">
-  <form method="POST" id="deleteAllergen">
-      <legend><strong>Delete Allergen <IMG SRC="delete_icon.png" width = "25" height = "25"></strong></legend>
-          <fieldset class="fields">
-          <p>Are you sure you wish to delete the following?</p>
-          <input type="hidden" name="AllergenID" id="deleteAllergenID" value="1">
-          <label><strong>ID:</strong></label> 1
-          <label> <strong>Name</strong> </label> gluten 
-    </fieldset>
-    <input class="btn" type="submit" id="deleteAllergen" value="Delete allergen">
-          <input class="btn" type="button" value="cancel" onClick="browseAllergen()">
-  </form> 
-</div><!-- delete -->
-
-</body>
-</html>
+            </fieldset>    
+                <input class="btn" type="submit" id="addAllergen" value="Add allergen">
+                <input class="btn" type="button" value="Cancel" onclick="allergens()">
+    </form>
+</div><!-- Insert-->
+{% endblock %}
