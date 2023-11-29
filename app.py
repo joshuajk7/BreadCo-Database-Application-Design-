@@ -1,7 +1,7 @@
 from flask import Flask, render_template, json, redirect
 from flask_mysqldb import MySQL
 from flask import request, url_for
-import database.db_connector as db
+import database.db_connector as db_connector
 import os
 
 app = Flask(__name__)
@@ -15,11 +15,16 @@ app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 mysql = MySQL(app)
 
 # Citation: 
-db_connection = db.connect_to_database()
+db_connection = db_connector.connect_to_database()
 
-## Global Variables
+## Helper Functions
+# -- db_connection is always established beforehand.
+def execute_query(query, query_params=()):
+    db_connection = db_connector.connect_to_database()
+    return db_connector.execute_query(db_connection, query, query_params)
 
 ## Routes
+
 # -- Home Page
 ## Returns User Home
 @app.route('/')
@@ -34,22 +39,19 @@ def bread():
 
 @app.route('/sales', methods=['GET', 'POST'])
 def sales(sales_create_count=1, update_sales_results=0, saleID=0):
+
     # Display Table Data for Sales and SoldProducts
     query = "SELECT sales.saleID, customers.name as Customer, sum(soldProducts.lineTotal) as 'Sale Total' FROM sales LEFT JOIN customers ON sales.customerID = customers.customerID LEFT JOIN soldProducts ON sales.saleID = soldProducts.saleID Group by sales.saleID;"
-    cursor = db.execute_query(db_connection=db_connection, query=query)
-    sales_results = cursor.fetchall()
+    sales_results = execute_query(query=query).fetchall()
 
     query = "SELECT soldProducts.soldProductID, sales.saleID, breadProducts.name as 'Product Name',  soldProducts.qtySold, soldProducts.lineTotal FROM soldProducts LEFT JOIN breadProducts on breadProducts.productID = soldProducts.productID LEFT JOIN sales on sales.saleID = soldProducts.saleID GROUP by soldProducts.soldProductID;"
-    cursor = db.execute_query(db_connection=db_connection, query=query)
-    soldProducts_results = cursor.fetchall()
+    soldProducts_results = execute_query(query).fetchall()
 
     query = "SELECT customerID, name from customers;"
-    cursor = db.execute_query(db_connection=db_connection, query=query)
-    customers_results = cursor.fetchall()
+    customers_results = execute_query(query=query).fetchall()
 
     query = "SELECT productID, name from breadProducts;"
-    cursor = db.execute_query(db_connection=db_connection, query=query)
-    products_results = cursor.fetchall()
+    products_results = execute_query(query=query).fetchall()
     
     if request.method == 'POST':
         # Add a Sale Feature
@@ -83,13 +85,13 @@ def sales(sales_create_count=1, update_sales_results=0, saleID=0):
             for i in range(1, sales_create_count+1):
                 #### Get SaleID from Recent Insert
                 query = "SELECT max(saleID) from sales;"
-                cursor = db.execute_query(db_connection=db_connection, query=query)
-                saleID = cursor.fetchall()[0]['max(saleID)']
+                saleID = execute_query(query=query).fetchall()
+                saleID = saleID[0]['max(saleID)']
 
                 query = "INSERT INTO soldProducts(saleID, productID, qtySold, lineTotal) Values (%s, %s, %s, %s);"
                 cur = mysql.connection.cursor()
-                productID = db.execute_query(db_connection=db_connection, query = f"Select productID from breadProducts where name = '{name_arr[i-1]}';" )
-                productID = productID.fetchall()[0]['productID']  # [{:}] list of dictionaries format.
+                productID = execute_query(query = f"Select productID from breadProducts where name = '{name_arr[i-1]}';" ).fetchall()
+                productID = productID[0]['productID']  # [{:}] list of dictionaries format.
                 cur.execute(query, (saleID, productID, qtySold_arr[i-1], lineTotal_arr[i-1]))
                 mysql.connection.commit()
 
@@ -108,8 +110,8 @@ def sales(sales_create_count=1, update_sales_results=0, saleID=0):
         elif request.form.get('saleID'):
             saleID = request.form.get('saleID')
             query = f"SELECT * from soldProducts where saleID = {saleID};"
-            cursor = db.execute_query(db_connection=db_connection, query=query)
-            update_sales_results = cursor.fetchall()
+            update_sales_results = execute_query(query=query)
+
         # Gather Information to Update
         elif request.form.get('updateLength'):
             boxes = int(request.form.get('updateLength'))
@@ -130,17 +132,23 @@ def sales(sales_create_count=1, update_sales_results=0, saleID=0):
             cur = mysql.connection.cursor()
             cur.execute(query, (customerID, sum(lineTotal_arr), saleID))
             mysql.connection.commit()
+
+            ### Get Incrementer for soldProductsID
+            query = f"SELECT min(soldProductID) from soldProducts WHERE saleID = { saleID };"
+            soldProductID = execute_query(query=query).fetchall()
+            soldProductID = soldProductID[0]['min(soldProductID)']
             
-            ### Add into soldProducts
+            ### Update soldProducts
             for i in range(1, boxes+1):
-                query = "UPDATE soldProducts SET productID = %s, qtySold = %s, lineTotal = %s WHERE saleID = %s;"
+                query = "UPDATE soldProducts SET productID = %s, qtySold = %s, lineTotal = %s WHERE saleID = %s and soldProductID = %s;"
                 cur = mysql.connection.cursor()
                 #productID = db.execute_query(db_connection=db_connection, query = f"Select productID from breadProducts where name = '{name_arr[i-1]}';" )
                 #productID = productID.fetchall()[0]['productID']  # [{:}] list of dictionaries format.
                 ## name_arr is already in product IDs for this Update Function.
-                cur.execute(query, (name_arr[i-1], qtySold_arr[i-1], lineTotal_arr[i-1], saleID))
+                cur.execute(query, (name_arr[i-1], qtySold_arr[i-1], lineTotal_arr[i-1], saleID, soldProductID))
                 mysql.connection.commit()
-            
+                soldProductID += 1
+
             return redirect(url_for('sales'))
 
     return render_template('sales.html', sales=sales_results, soldProducts=soldProducts_results, customers=customers_results, products= products_results,count=sales_create_count, update_sales_results=update_sales_results, sale_id = int(saleID))
