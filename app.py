@@ -262,8 +262,8 @@ def sales():
     elif request.method == 'POST':
         # Get Form Data
         customer_id = request.form.get('customer')
-        products = request.form.get('products[]')
-        quantities = request.form.get('quantities[]')
+        products = request.form.getlist('products[]')
+        quantities = request.form.getlist('quantities[]')
 
         # Calculate lineTotal for each product
         line_totals = []
@@ -413,6 +413,38 @@ def deleteCustomer(customerID):
     return jsonify(response_data), 200
 
 
+@app.route("/editCustomer/<int:customerID>", methods=["GET"])
+def editCustomer(customerID):
+    # Retrieve customer details using customerID
+    customer_query = "SELECT * FROM customers where customerID=%s;"
+    customer_result = execute_query(query=customer_query, query_params=(customerID,)).fetchall()
+
+    return render_template("editCustomer.html", customerID=customerID, customer=customer_result)
+
+@app.route("/updateCustomer/<int:customerID>", methods=["POST"])
+def updateCustomer(customerID):
+    try:
+         # Retrieve form data
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phoneNumber = request.form.get('phoneNumber')
+        streetAddress = request.form.get('streetAddress')
+        city = request.form.get('city')
+        state = request.form.get('state')
+        zipCode = request.form.get('zipCode')
+        
+        upadate_query = "UPDATE customers SET name=%s, email=%s, phoneNumber=%s, streetAddress=%s, city=%s, state=%s, zipCode=%s WHERE customerID=%s;"
+        execute_query(query=upadate_query, query_params=(name, email, phoneNumber, streetAddress, city, state, zipCode, customerID))
+
+        # Redirect or render a respose
+        return redirect('/customers') # Redirect to the customers page after processessing the form
+    
+    except Exception as e:
+            # Handle exceptions, log the error, and return an appropriate response
+            print(f"Error updating product: {e}")
+            response_data = {"error": "Failed to update product"}
+            return jsonify(response_data), 500
+    
 @app.route('/db-test')
 def test_database_connection():
     print("Executing a sample query on the database using the credentials from db_credentials.py")
@@ -420,6 +452,8 @@ def test_database_connection():
     query = "SELECT * from breadProducts;"
     result = execute_query(db_connection, query);
     return result
+
+
 
 # @app.errorhandler(404)
 # def page_not_found(error): 
