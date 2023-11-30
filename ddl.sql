@@ -46,7 +46,6 @@ CREATE TABLE breadProducts (
   unitPrice DECIMAL NOT NULL,
   count INT NOT NULL,
   netWeight DECIMAL NOT NULL,
-  stock INT NOT NULL,
   cultureID INT NOT NULL,
   PRIMARY KEY (productID),
   FOREIGN KEY (cultureID) references cultures(cultureID) ON DELETE RESTRICT
@@ -121,13 +120,13 @@ VALUES
 -- -----------------------------------------------------
 -- DATA: breadProducts
 -- -----------------------------------------------------
-INSERT INTO breadProducts (name, unitPrice, count, netWeight, stock, cultureID) 
+INSERT INTO breadProducts (name, unitPrice, count, netWeight, cultureID) 
 VALUES 
-('Baguette', 4.00, 1, 7.6, 60, (select cultureID from cultures where name = 'France')),
-('Banana Bread', 8.00, 1, 14, 40, (select cultureID from cultures where name = 'USA')),
-('Lavash', 3.00, 8, 9, 100, (select cultureID from cultures where name = 'Iran')),
-('Ciabatta', 8.00, 16, 11, 800, (select cultureID from cultures where name = 'Italy')),
-('Cornbread', 4.00, 16, 14.5, 345, (select cultureID from cultures where name = 'USA'));
+('Baguette', 4.00, 1, 7.6, (select cultureID from cultures where name = 'France')),
+('Banana Bread', 8.00, 1, 14, (select cultureID from cultures where name = 'USA')),
+('Lavash', 3.00, 8, 9, (select cultureID from cultures where name = 'Iran')),
+('Ciabatta', 8.00, 16, 11, (select cultureID from cultures where name = 'Italy')),
+('Cornbread', 4.00, 16, 14.5, (select cultureID from cultures where name = 'USA'));
 
 -- -----------------------------------------------------
 -- DATA: sales

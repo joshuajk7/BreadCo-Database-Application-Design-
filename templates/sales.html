@@ -30,16 +30,6 @@
 <br>
 </div> <!-- sales --end -->
 
-
-<div id="Search">
-  <form method="POST" id="searchSale">
-    <legend style="font-size:20px"><strong>Search Sale</strong> <IMG SRC="{{url_for('static', filename='find_icon.png')}}" width = "25" height = "25"></legend>
-    <label>Sale ID</label> <input type="number" name="saleID">
-    <input class="btn" type="submit" id="searchSale" value="Find">
-  </form>
-</div>
-
-
 <div id="soldProducts">
   <br>
   <legend style="font-size:20px"><strong>Sold Products</strong></legend>
@@ -96,11 +86,11 @@
           </td>
           <td>
             <label>Quantity Sold</label> 
-            <input type="number" name="qtySold_{{i}}" required min="1"> {{ i }}
+            <input type="number" name="qtySold_{{i}}" required min="1">
           </td>
           <td>
             <label>Line Total</label> 
-            <input type="number" name="lineTotal_{{i}}" required step=0.01 min=0.01> {{ i }}
+            <input type="number" name="lineTotal_{{i}}" required step=0.01 min=0.01>
           </td>
         </tr>
         {% endfor %}
@@ -170,7 +160,7 @@
               <h2> <u>Sale {{ sale_id }}</u></h2>
             </td>
 
-          <form method="POST" name="updateSale" action="/sales#updateSale">
+        <form method="POST" name="updateSale" action="/sales#updateSale">
           <td>
             <label for="customer">Customer</label>
             <select name="customer" id="customer">
@@ -189,7 +179,6 @@
               {% endfor %}
             </select>
           </td>
-          Test: {{ cust_name }}
         </tr>
 
         {% for update in update_sales_results %}
@@ -225,7 +214,7 @@
         <tr>
           <td>
             <input type="hidden" name="updateSaleID" id="updateSaleID" value={{ sale_id }}>
-            <input type="hidden" name="updateLength" id="updateSale" value={{ boxes.current }}>
+            <input type="hidden" name="updateLength" id="updateLength" value={{ boxes.current }}>
             <input type="submit" value ="Update this Sale">
           </td>
         </form>

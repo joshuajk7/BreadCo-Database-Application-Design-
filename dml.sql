@@ -8,6 +8,9 @@ SELECT productID, name FROM breadProducts;
 -- Find saleID for sales drop down
 SELECT saleID from sales;
 
+-- Find customerID for Customer dropdown
+SELECT customerID from customers;
+
 -- -------------------------------------------
 -- READ
 -- -------------------------------------------
@@ -36,7 +39,7 @@ LEFT JOIN customers ON sales.customerID = customers.customerID
 LEFT JOIN soldProducts ON sales.saleID = soldProducts.saleID
 Group by sales.saleID;
 
--- Get all data for sold roducts
+-- Get all data for sold Products
 SELECT soldProducts.soldProductID, sales.saleID, breadProducts.name as "Product Name",  soldProducts.qtySold, soldProducts.lineTotal
 FROM soldProducts
 LEFT JOIN breadProducts on breadProducts.productID = soldProducts.productID
