@@ -1,4 +1,4 @@
--- -------------------------------------------
+z-- -------------------------------------------
 -- FIND FOR DROP DOWN
 -- -------------------------------------------
 
@@ -23,14 +23,14 @@ LEFT JOIN allergens on allergensProducts.allergenID = allergens.allergenID
 Group by breadProducts.productID;
 
 -- Get all data for allergensProducts
-SELECT allergensProducts.allergensProductID, breadProducts.name as "Bread Product", allergens.name as Allergen
+SELECT allergensProducts.allergensProductID, breadProducts.name as "Bread Product", allergens.name as "Allergen"
 FROM allergensProducts
 LEFT JOIN breadProducts ON breadProducts.productID = allergensProducts.productID
 LEFT JOIN allergens ON allergensProducts.allergenID = allergens.allergenID
 Group by allergensProducts.allergensProductID;
 
 -- Get all data for sales
-SELECT sales.saleID, customers.name as Customer, sum(soldProducts.lineTotal) as "Sale Total"
+SELECT sales.saleID, customers.name as customer, sum(soldProducts.lineTotal) as "Sale Total"
 FROM sales
 LEFT JOIN customers ON sales.customerID = customers.customerID
 LEFT JOIN soldProducts ON sales.saleID = soldProducts.saleID
@@ -44,14 +44,14 @@ LEFT JOIN sales on sales.saleID = soldProducts.saleID
 GROUP by soldProducts.soldProductID;
 
 -- Get all data for customers
-SELECT CustomersID, name, email, phoneNumber, streetAddress, city, state, zipCode FROM Customers;
-Or SELECT * FROM Customers;
+SELECT customersID, name, email, phoneNumber, streetAddress, city, state, zipCode FROM customers;
+Or SELECT * FROM customers;
 
 -- Get all data for allergens
-SELECT AllergensID, name FROM Allergens; 
+SELECT allergensID, name FROM allergens; 
 
 -- get all data for cultures
-SELECT CulturesID, name from Cultures;
+SELECT culturesID, name from cultures;
 
 -- -------------------------------------------
 -- SEARCH
@@ -88,17 +88,17 @@ VALUES (:breadnameInput, :unitPriceInput, :countInput, :netWeightInput, :netstoc
 INSERT INTO allergensProduct(productID, allergenID)
 VALUES (:productIDInput, :allergenIDInput);
 
--- Add Sale (minus sale total)
-INSERT INTO sales(customerID)
-VALUES (:customerIDInput);
+-- Add Sale (sales table)
+INSERT INTO sales(customerID), saleTotal
+VALUES (:customerIDInput, :saleTotal);
 
--- Part of Adding Sale - Adding Sold Products to the Intersection Table
+-- Add Sale (soldProducts Intersection Table)
 INSERT INTO soldProducts(saleID, productID, qtySold, lineTotal)
 Values (:saleIDInput, productIDInput, qtySoldInput, lineTotalInput);
 
 -- Add Customer
-INSERT INTO `customers` (`customerID`, `name`, `email`, `phoneNumber`, `streetAddress`, `city`, `state`, `zipCode`) 
-VALUES (':customerIDinput', ':nameInput', ':emailInput', ':phoneNumberInput', ':streetAddressInput', ':cityInput', ':stateInput', ‘:zipCodeInput’);
+INSERT INTO customers (name, email, phoneNumber, streetAddress, city, state, zipCode)
+VALUES (:nameInput, :emailInput, :phoneNumberInput, :streetAddressInput, :cityInput, :stateInput, :zipCodeInput);
 
 -- Add Allergen
 INSERT INTO allergens(name)
@@ -106,7 +106,7 @@ VALUES (:allergenIDInput);
 
 -- Add Culture
 INSERT INTO cultures(name)
-VALUES ( :cultureIDInput);
+VALUES (:cultureIDInput);
 
 -- -------------------------------------------
 -- UPDATE
@@ -115,37 +115,25 @@ VALUES ( :cultureIDInput);
 -- Update breadProduct
 UPDATE breadProducts SET name=:breadnameInput, unitPrice=:unitPriceInput, count=:countInput, netWeight=:netWeightInput, 
 stock=:netstockInput, cultureID:cultureIDInput
-WHERE id=:productID_from_dropdown;
+WHERE productID=:productID_from_dropdown;
 
 -- Part of Update Bread Product - Adding Allergens to the Intersection Table
 UPDATE allergensProduct SET allergenID=:allergenIDInput
-WHERE id = :productID_from_dropdown;
+WHERE productID = :productID_from_dropdown;
 
--- Update Sale
-UPDATE sales SET customer=:customerIDInput
-WHERE id=:saleID_from_dropdown;
+-- Update Sale (sales table)
+UPDATE sales SET customerID = :customerIDInput
+WHERE saleID = :saleID_from_dropdown;
 
--- Update Sale -- Adding SaleID, Product Name, Quatnity Sold, Line Total to Interesection table
-UPDATE sales SET productID=:productIDInput, qtySold=:qtySoldInput, lineTotal=:lineTotalInput
-WHERE id=:saleID_from_dropdown;
+-- Update Sale -- (soldProducts Interesection table)
+UPDATE soldProducts SET productID=:productIDInput, qtySold=:qtySoldInput, lineTotal=:lineTotalInput
+WHERE soldProductID = :soldProductID_from_dropdown;
 
 -- Update customers
-onclick="update_Customers('pid')"
-SELECT CustomersID, name, email, phoneNumber, streetAddress, city, state, zipCode 
-FROM Customers
-WHERE pid = :CustomersID_selected_from_browse_Customers_page;
+onclick="updateCustomers('customerID')"
+SELECT * FROM customers WHERE customerID = :customersID_selected_from_browse_Customers_page;
 
--- Update allergens
-onclick="update_Allergens('pid')" 
-SELECT AllergensID, Name
-FROM Allergens 
-WHERE pid = :AllergensID_selected_from_browse_allergens_page;
 
--- Update cultures
-onclick="update_Cultures('pid')" 
-SELELCT CulturesID, Name
-FROM Cultures 
-WHERE pid = :CulturesID_selected_from_browse_Cultures_page;
 
 -- -------------------------------------------
 -- DELETE
@@ -161,19 +149,19 @@ DELETE FROM soldProducts WHERE productID=:productID_from_dropdown;
 DELETE FROM allergensProduct WHERE productID=:productID_from_dropdown;
 
 -- Delete Sales
-DELETE FROM saleID WHERE saleID=:saleID_from_dropdown;
+DELETE FROM sales WHERE saleID=:saleID_from_dropdown;
 
 -- Delete Sale's Connection to M:N (soldProducts)
 DELETE FROM soldProducts WHERE saleID=:saleID_from_dropdown;
 
 -- Delete customer
-onclick="delete_Customers('pid')" 
-DELETE FROM Customers WHERE pid = :CustomersID_selected_from_browse_Customers_page;
+onclick="deleteCustomers('pid')" 
+DELETE FROM customers WHERE pid = :CustomersID_selected_from_browse_Customers_page;
 
 -- Delete allergen
-onclick="delete_Allergens('pid')" 
-DELETE FROM Allergens WHERE pid = :AllergensID_selected_from_browse_allergens_page;
+onclick="deleteAllergens('pid')" 
+DELETE FROM allergens WHERE pid = :AllergensID_selected_from_browse_allergens_page;
 
 -- Delete culture
-onclick="delete_Cultures('pid')" 
-DELETE FROM CulturesWHERE pid = :CulturesID_selected_from_browse_Cultures_page;
+onclick="deleteCultures('pid')" 
+DELETE FROM cultures WHERE pid = :CulturesID_selected_from_browse_Cultures_page;
