@@ -1,0 +1,177 @@
+{% extends "layout.html" %}
+{% block title %} Sales Page{% endblock %}
+
+{% block content %}
+
+
+<script>
+  function addProductRow() {
+    console.log("Adding product row");
+    const tableBody = document.querySelector('#productTable tbody');
+    const newRow = document.createElement('tr');
+
+    // Product dropdown
+    const productCell = document.createElement('td');
+    const productSelect = document.createElement('select');
+    productSelect.name = 'products[]';
+    {% for product in products %}
+      productSelect.innerHTML += `<option value="{{ product[0] }}">{{ product[1] }}</option>`;
+    {% endfor %}
+    productCell.appendChild(productSelect);
+
+    // Quantity input
+    const quantityCell = document.createElement('td');
+    const quantityInput = document.createElement('input');
+    quantityInput.type = 'number';
+    quantityInput.name = 'quantities[]';
+    quantityInput.min = 1;
+    quantityInput.required = true;
+    quantityCell.appendChild(quantityInput);
+
+    // Delete button
+    const deleteCell = document.createElement('td');
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.textContent = 'Delete';
+    deleteButton.onclick = function() {
+      tableBody.removeChild(newRow);
+    };
+    deleteCell.appendChild(deleteButton);
+
+    // Append cells to the new row
+    newRow.appendChild(productCell);
+    newRow.appendChild(quantityCell);
+    newRow.appendChild(deleteCell);
+
+    // Append the new row to the table body
+    tableBody.appendChild(newRow);
+  }
+
+  function deleteSale(saleID) { 
+      if (confirm("Are you sure you want to delete this sale?")) {
+          // Make an AJAX request to the server to delete the sale
+          var xhr = new XMLHttpRequest();
+          
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === XMLHttpRequest.DONE) {
+                  if (xhr.status === 200) {
+                      // Successful response from the server
+                      alert("Sale successfully deleted");
+                      // You might want to reload the page or update the UI here
+                      location.reload(); // This reloads the page; you can replace it with more sophisticated UI updates
+                  } else {
+                      // Handle error response from the server
+                      alert("Error deleting sale");
+                  }
+              }
+          };
+          
+          xhr.open("DELETE", "/sales/" + saleID, true);
+          xhr.send();
+      }
+  }
+  
+  function editSale(saleID) {
+        // Redirect to the editProduct route with the specified productID
+        window.location.href = "/editSale/" + saleID;
+    }
+
+</script>
+
+<h2>Sales</h2>
+
+<div id="sales">
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Customer</th>
+    <th>Sale Total</th>
+    <th><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> <a href="/sales#addSale" >New</a></th>
+  </tr>
+
+  <!-- Iterates through each item in sales -->
+  {% for sale in sales %}
+  <tr>
+      <td>{{ sale[0] }} </td>
+      <td>{{ sale[1] }} </td>
+      <td>${{ sale[2] }} </td>
+      <td><a href="#" onClick="editSale({{ sale[0] }})"> <IMG SRC="edit_icon.png" width = "25" height = "25">Edit</a></td>
+      <td><a href="#" onclick="deleteSale({{ sale[0] }})"> <IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
+  </tr>
+  {% endfor %}
+</table>
+<br>
+</div> <!-- sales --end -->
+
+<div id="Search">
+  <form method="POST" id="searchSale">
+    <legend style="font-size:20px"><strong>Search Sale</strong> <IMG SRC="{{url_for('static', filename='find_icon.png')}}" width = "25" height = "25"></legend>
+    <label>Sale ID</label> <input type="number" name="saleID">
+    <input class="btn" type="submit" id="searchSale" value="Find">
+  </form>
+</div>
+
+<div id="soldProducts">
+  <br>
+    <legend style="font-size:20px"><strong>Sold Products</strong></legend>
+    <!-- Header for soldProducts Table -->
+      <table border="1" cellpadding="5">
+        <tr>
+          <th>ID</th>
+          <th>SaleID</th>
+          <th>Product Name</th>
+          <th>Quantity Sold</th>
+          <th>Line Total</th>
+        </tr>
+        <!-- Iterates through each item in soldProducts -->
+        {% for sold in soldProducts %}
+        <tr>
+            <td>{{ sold[0] }} </td>
+            <td>{{ sold[1] }} </td>
+            <td>{{ sold[2] }} </td>
+            <td>{{ sold[3] }} </td>
+            <td>${{ sold[4] }} </td>
+        </tr>
+        {% endfor %}
+      </table>
+  <br>
+</div> <!-- soldProducts -- end -->
+
+<div id="insert">
+  <br>
+  <form method="POST" name="addSale" id="addSale" action="/sales#addSale">
+    <legend style="font-size:20px"><strong>Add a Sale<IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
+      <br>
+      <label for="customer">Customer </label><select name="customer" id="customer">
+              {% for customer in customers %}
+              <option value="{{ customer[0] }}"> {{ customer[1] }}</option>
+              {% endfor %}  
+            </select>
+            
+
+      <table id="productTable">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+
+      </table>
+      
+      <button type="button" onclick="addProductRow()">Add Product</button>
+
+      <button type="submit">Submit Sale</button>
+  </form>
+
+</div><!-- insert -- end -->
+
+
+
+{% endblock %}

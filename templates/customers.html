@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+{% block title %} customers Page {% endblock %}
+
+
+{% block content %} 
+
+<script>
+     function deleteCustomer(customerID) {
+      if (confirm("Are you sure you want to delete this customer?")) {
+          // Make an AJAX request to the server to delete the customer
+          var xhr = new XMLHttpRequest();
+          
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === XMLHttpRequest.DONE) {
+                  if (xhr.status === 200) {
+                      // Successful response from the server
+                      alert("Customer successfully deleted");
+                      // You might want to reload the page or update the UI here
+                      location.reload(); // This reloads the page; you can replace it with more sophisticated UI updates
+                  } else {
+                      // Handle error response from the server
+                      alert("Error deleting customer");
+                  }
+              }
+          };
+          
+          xhr.open("DELETE", "/customer/" + customerID, true);
+          xhr.send();
+      }
+  }
+</script>
+
+<h2>Customers</h2>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Street Address</th>
+        <th>City</th>
+        <th>State</th>
+        <th>zipCode</th>
+        
+
+        <th><IMG SRC="new_icon.png" width = "25" height = "25"> <a href="#" onClick="newCustomer()">New</a></th>
+    </tr>
+    {% for customer in customers %}
+    <tr>
+        <td>{{ customer[0] }}</td>
+        <td>{{ customer[1] }}</td>
+        <td>{{ customer[2] }}</td>
+        <td>{{ customer[3] }}</td>
+        <td>{{ customer[4] }}</td>
+        <td>{{ customer[5] }}</td>
+        <td>{{ customer[6] }}</td>
+        <td>{{ customer[7] }}</td>
+        <td><a href="#" onclick="deleteCustomer({{ customer[0] }})"> <IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!--Form to add a new customer-->
+<div id="insert">
+    <br>
+    <form method="POST" id="addCustomer" action= "/customers">
+        <legend><strong> Add Customer <IMG SRC = "new_icon.png" width = "25" height = "25"></strong></legend>
+            <fieldset class="fields">
+                <label for="name"> Name </label> <input type="text" name="name">
+                <label for="email"> Email </label> <input type="email" name="email">
+                <label for="phoneNumber"> Phone Number </label> <input type="tel" name="phoneNumber">
+                <label for="streetAddress"> Street Address </label> <input type="text" name="streetAddress">
+                <label for="city"> City </label> <input type="text" name="city">
+                <label for="state"> State </label> <input type="text" name="state">
+                <label for="zipCode"> zipCode </label> <input type="text" name="zipCode">
+
+            </fieldset>    
+                <input class="btn" type="submit" id="addCustomer" value="Add Customer">
+                <input class="btn" type="button" value="Cancel" onclick="customers()">
+    </form>
+</div><!-- Insert-->
+
+{% endblock %}

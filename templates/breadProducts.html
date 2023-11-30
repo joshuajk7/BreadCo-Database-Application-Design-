@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+{% block title %} Bread Products Page{% endblock %}
+
+
+{% block content %}
+
+<script>
+  
+  function editProduct(productID) {
+        // Redirect to the editProduct route with the specified productID
+        window.location.href = "/editProduct/" + productID;
+    }
+
+  
+  function deleteProduct(productID) {
+      if (confirm("Are you sure you want to delete this product?")) {
+          // Make an AJAX request to the server to delete the product
+          var xhr = new XMLHttpRequest();
+          
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === XMLHttpRequest.DONE) {
+                  if (xhr.status === 200) {
+                      // Successful response from the server
+                      alert("Product successfully deleted");
+                      // You might want to reload the page or update the UI here
+                      location.reload(); // This reloads the page; you can replace it with more sophisticated UI updates
+                  } else {
+                      // Handle error response from the server
+                      alert("Error deleting product");
+                  }
+              }
+          };
+          
+          xhr.open("DELETE", "/breadProducts/" + productID, true);
+          xhr.send();
+      }
+  }
+  </script>
+  
+
+<h2>Bread Products</h2>
+
+<table>
+    <thead>
+    <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Unit Price</th>
+    <th>Count</th>
+    <th>Net Weight</th>
+    <th>Stock</th>
+    <th>Culture</th>
+    <th>Allergen(s)</th>
+  </tr>
+  {% for item in breadProducts %}
+  <tr>
+    <td>{{ item[0] }}</td> 
+    <td>{{ item[1] }}</td>
+    <td>{{ item[2] }}</td>
+    <td>{{ item[3] }}</td>
+    <td>{{ item[4] }}</td>
+    <td>{{ item[5] }}</td>
+    <td>{{ item[6] }}</td>
+    <td>{{ item[7] }}</td>
+
+    <!--This is handled in the webapp.py file, item[0] is the id--> 
+    <td><a href="#" onClick="editProduct({{ item[0] }})"> <IMG SRC="edit_icon.png" width = "25" height = "25">Edit</a></td>
+    <td><a href="#" onclick="deleteProduct({{ item[0] }})"> <IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
+  </tr>
+  {% endfor %}
+  </table>
+
+<!--Form to add a new breadProduct-->
+<div id="insert">
+    <br>
+    <form method="POST" id="addProduct" action = "/breadProducts">
+        <legend><strong> Add Bread Product <IMG SRC = "new_icon.png" width = "25" height = "25"></strong></legend>
+          <fieldset class="fields">
+            <label for="name"> Name </label> <input type="text" name="name">
+            <label for="unitPrice"> Unit Price </label> <input type="number" name="unitPrice">
+            <label for="count"> Count </label> <input type="number" name="count">
+            <label for="netWeight"> Net Weight (oz)</label> <input type="number" name="netWeight"> <br><br>
+            <label for="stock"> Stock </label> <input type="number" name="stock">
+
+            <label for="culture"> Culture </label>
+              <select name="cultureID">
+                {% for culture in cultures %}
+                <option value="{{ culture[0] }}"> {{ culture[1] }}</option>
+                {% endfor %}
+              </select>          
+
+              <tr>
+                <td><label>Allergen(s)</label></td>
+                <!--This is dynamically populated with all availble certifications-->
+                <td>
+                  {% for allergen in allergens %}
+                  <div>
+                  <!-- <input type ="checkbox" id="allergen" name="allergen" value="allergen"> <label for="allergen"> {{ allergen[1] }} </label> <br> -->
+                  <input type="checkbox" id="allergen_{{ allergen[0] }}" name="allergens[]" value="{{ allergen[0] }}">
+                  <label for="allergen_{{ allergen[0] }}">{{ allergen[1] }}</label>
+                  </div>
+                  {% endfor %}
+                </select><br>
+                </td>
+              </tr>
+            </table>
+
+      </fieldset>
+          <input class="btn" type="submit" id="addProduct" value="Add Product">
+          <input class="btn" type="button" value="Cancel" onClick="browseProduct()">
+	</form> 
+</div><!-- Insert -->
+{% endblock %}

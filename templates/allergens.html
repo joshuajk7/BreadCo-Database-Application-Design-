@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block title %} Allergens Page {% endblock %}
+
+
+{% block content %} 
+
+<script>
+     function deleteAllergen(allergenID) {
+      if (confirm("Are you sure you want to delete this allergen?")) {
+          // Make an AJAX request to the server to delete the allergen
+          var xhr = new XMLHttpRequest();
+          
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === XMLHttpRequest.DONE) {
+                  if (xhr.status === 200) {
+                      // Successful response from the server
+                      alert("Allergen successfully deleted");
+                      // You might want to reload the page or update the UI here
+                      location.reload(); // This reloads the page; you can replace it with more sophisticated UI updates
+                  } else {
+                      // Handle error response from the server
+                      alert("Error deleting allergen");
+                  }
+              }
+          };
+          
+          xhr.open("DELETE", "/allergens/" + allergenID, true);
+          xhr.send();
+      }
+  }
+</script>
+
+
+<h2>Allergens</h2>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th><IMG SRC="new_icon.png" width = "25" height = "25"> <a href="#" onClick="newAllergen()">New</a></th>
+    </tr>
+    {% for item in allergens %}
+    <tr>
+        <td>{{ item[0] }}</td>
+        <td>{{ item[1] }}</td>
+        <td><a href="#" onclick="deleteAllergen({{ item[0] }})"> <IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!--Form to add a new allergen-->
+<div id="insert">
+    <br>
+    <form method="POST" id="addAllergen" action= "/allergens">
+        <legend><strong> Add Allergen <IMG SRC = "new_icon.png" width = "25" height = "25"></strong></legend>
+            <fieldset class="fields">
+                <label for="name"> Name </label> <input type="text" name="name">
+
+            </fieldset>    
+                <input class="btn" type="submit" id="addAllergen" value="Add allergen">
+                <input class="btn" type="button" value="Cancel" onclick="allergens()">
+    </form>
+</div><!-- Insert-->
+{% endblock %}
