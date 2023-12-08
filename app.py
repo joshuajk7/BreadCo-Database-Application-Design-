@@ -10,32 +10,42 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '' #last 4 of onid
 app.config['MYSQL_DB'] = 'project_sample'
-#app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 
 mysql = MySQL(app)
 
 # Citation: 
 db_connection = db_connector.connect_to_database()
 
-## Helper Functions
+### Helper Functions ###
 # -- Execute Query from Db_connector, but returns tuple.
 def execute_query(query, query_params=()):
     db_connection = db_connector.connect_to_database()
     return db_connector.execute_query(db_connection, query, query_params)
 
-# -- Execute Query from db_connector, but returns dictionary instead.
-def execute_query_dict(query, query_params=()):
-    db_connection = db_connector.connect_to_database()
-    return db_connector.execute_query_dict(db_connection, query, query_params)
 
-
-## Routes
-
+### Home Page ###
 # -- Home Page
-## Returns User Home
 @app.route('/')
 def home():
     return render_template('home.html')
+
+### Database Reset ###
+# -- Reset the Database
+@app.route("/database", methods=["POST", "GET"])
+def database():
+    
+    # Open and load the file.
+    file = open(f'{app.root_path}/ddl.sql', 'r')
+    readFile = file.read()
+    file.close()
+
+    # Split each queries by ;
+    queries = readFile.split(';')
+
+    # Iterate through queries
+    for query in queries:
+        db_connector.execute_query(db_connection, query)
+    return redirect(url_for('home'))
 
 
 ### Bread Products ###
@@ -65,7 +75,7 @@ def breadProducts():
         cultures_query = "SELECT cultureID, name FROM cultures;"
         cultures_results = execute_query(cultures_query)
 
-        #Render the template with the breadProducts and certificate results we generated     
+        # Render the template with the breadProducts and certificate results we generated     
         return render_template('breadProducts.html', breadProducts=breadProducts_results, allergens=allergens_results, cultures=cultures_results) 
     
     elif request.method == "POST":
@@ -197,199 +207,225 @@ def updateProduct(productID):
 ### Customers ###
 # -- Customers Page
 @app.route("/customers", methods=['GET', 'POST'])
-def customers(load=False):
+def customers():
     
-    # Display Customers Table
-    query = "SELECT customerID, name, email, phoneNumber, streetAddress, city, state, zipCode FROM customers"
-    customers_results = execute_query_dict(query=query).fetchall()
-
-    # Grab series of sales ID to cross refence with Delete (fix dml reflect this query)
-    customers_in_sales = []
-    query = "SELECT customerID FROM sales;"
-    results = execute_query_dict(query=query).fetchall()
-
-    for dict in results:
-        customers_in_sales.append(dict['customerID'])
-
-    if request.method == 'POST':
-        # Adding a Customer
-
-        ## Commiting Adding to a Customer
-        if request.form.get('addCustomer'):
-            name = request.form.get('name')
-            email = request.form.get('email')
-            phoneNumber = request.form.get('phoneNumber')
-            streetAddress = request.form.get('streetAddress')
-            city = request.form.get('city')
-            state = request.form.get('state')
-            zipCode = request.form.get('zipCode')
-            query = "INSERT INTO customers (name, email, phoneNumber, streetAddress, city, state, zipCode) VALUES (%s, %s, %s, %s, %s, %s, %s);"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (name, email, phoneNumber, streetAddress, city, state, zipCode))
-            mysql.connection.commit()
-
-            return redirect(url_for('customers'))
-    
-        # Updating a Customer
-        # Load a Customer
-        if request.form.get('loadCustomer'):
-            customerID = int(request.form.get('loadedCustomer'))
-            query = f"SELECT customerID, name, email, phoneNumber, streetAddress, city, state, zipCode FROM customers WHERE customerID = { customerID };"
-            load = execute_query_dict(query=query).fetchall()
-
-        # Commiting Updating a Customer to the Database
-        if request.form.get('updateCustomer'):
-            customerID = request.form.get('customerID')
-            name = request.form.get('name')
-            email = request.form.get('email')
-            phoneNumber = request.form.get('phoneNumber')
-            streetAddress = request.form.get('streetAddress')
-            city = request.form.get('city')
-            state = request.form.get('state')
-            zipCode = request.form.get('zipCode')
-            query = "UPDATE customers SET name = %s, email = %s, phoneNumber = %s, streetAddress = %s, city = %s, state = %s, zipCode = %s WHERE customerID = %s;"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (name, email, phoneNumber, streetAddress, city, state, zipCode, customerID))
-            mysql.connection.commit()
+    if request.method == "GET":
         
-            return redirect(url_for('customers'))
+        # Display Customers Table
+        customers_query = "SELECT * FROM customers;"
+        customers_results = execute_query(query=customers_query).fetchall()
+        
+        saleIDs_arr = []
+        saleIDs_query = "SELECT customerID FROM sales;"
+        saleIDs_query = execute_query(query=saleIDs_query)
+        for arr in saleIDs_query:
+            saleIDs_arr.append(arr[0])
+
+        #Render the template with the customers
+        return render_template('customers.html', customers=customers_results, saleIDs=saleIDs_arr) 
     
+    elif request.method == "POST":
+        # Retrieve form data
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phoneNumber = request.form.get('phoneNumber')
+        streetAddress = request.form.get('streetAddress')
+        city = request.form.get('city')
+        state = request.form.get('state')
+        zipCode = request.form.get('zipCode')
+        query = "INSERT INTO customers (name, email, phoneNumber, streetAddress, city, state, zipCode) VALUES (%s, %s, %s, %s, %s, %s, %s);"
+        cur = mysql.connection.cursor()
+        cur.execute(query, (name, email, phoneNumber, streetAddress, city, state, zipCode))
+        mysql.connection.commit()
 
-    return render_template('customers.html', customers=customers_results, load=load, customers_in_sales=customers_in_sales)
+        return redirect(('/customers'))
+
+    return render_template('customers.html')
 
 
-# -- Delete a customer
-@app.route("/delete_customers/<int:customerID>")
-def delete_customers(customerID):
-    ## Delete from customers
-    query = "DELETE FROM customers where customerID = '%s';"
-    cur = mysql.connection.cursor()
-    cur.execute(query, (customerID,))
-    mysql.connection.commit()
+# -- Delete a Customer
+@app.route("/customer/<int:customerID>", methods=["DELETE"])
+def deleteCustomer(customerID):
+    # Then Delete Customer (Customer)
+    delete_customers_query = "DELETE FROM customers WHERE customerID=%s;"
+    execute_query(query=delete_customers_query, query_params=(customerID,))
 
-    return redirect("/customers")
+    response_data = {"message": "Customer successfully deleted"}
+    return jsonify(response_data), 200
+
+
+# -- Load a Customer's Information for an Update
+@app.route("/editCustomer/<int:customerID>", methods=["GET"])
+def editCustomer(customerID):
+    # Retrieve customer details using customerID
+    customer_query = "SELECT * FROM customers where customerID=%s;"
+    customer_result = execute_query(query=customer_query, query_params=(customerID,)).fetchall()
+
+    return render_template("editCustomer.html", customerID=customerID, customer=customer_result)
+
+
+# -- Update a Customer
+@app.route("/updateCustomer/<int:customerID>", methods=["POST"])
+def updateCustomer(customerID):
+    try:
+         # Retrieve form data
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phoneNumber = request.form.get('phoneNumber')
+        streetAddress = request.form.get('streetAddress')
+        city = request.form.get('city')
+        state = request.form.get('state')
+        zipCode = request.form.get('zipCode')
+        
+        upadate_query = "UPDATE customers SET name=%s, email=%s, phoneNumber=%s, streetAddress=%s, city=%s, state=%s, zipCode=%s WHERE customerID=%s;"
+        execute_query(query=upadate_query, query_params=(name, email, phoneNumber, streetAddress, city, state, zipCode, customerID))
+
+        # Redirect or render a respose
+        return redirect('/customers') # Redirect to the customers page after processessing the form
+    
+    except Exception as e:
+            # Handle exceptions, log the error, and return an appropriate response
+            print(f"Error updating product: {e}")
+            response_data = {"error": "Failed to update product"}
+            return jsonify(response_data), 500
 
 
 ### Sales & SoldProducts ###
-# -- Sales Page
+# -- Sales and soldProducts Page
 @app.route('/sales', methods=['GET', 'POST'])
-def sales(sales_create_count=1, update_sales_results=0, saleID=0):
+def sales():
 
-    # Display Table Data for Sales and SoldProducts
-    query = "SELECT sales.saleID, customers.name as Customer, sum(soldProducts.lineTotal) as 'Sale Total' FROM sales LEFT JOIN customers ON sales.customerID = customers.customerID LEFT JOIN soldProducts ON sales.saleID = soldProducts.saleID Group by sales.saleID;"
-    sales_results = execute_query_dict(query=query).fetchall()
+    if request.method == "GET":
+        # Display Table Data for Sales and SoldProducts
+        query = "SELECT sales.saleID, customers.name as Customer, sum(soldProducts.lineTotal) as 'Sale Total' FROM sales LEFT JOIN customers ON sales.customerID = customers.customerID LEFT JOIN soldProducts ON sales.saleID = soldProducts.saleID Group by sales.saleID;"
+        sales_results = execute_query(query=query).fetchall()
 
-    query = "SELECT soldProducts.soldProductID, sales.saleID, breadProducts.name as 'Product Name',  soldProducts.qtySold, soldProducts.lineTotal FROM soldProducts LEFT JOIN breadProducts on breadProducts.productID = soldProducts.productID LEFT JOIN sales on sales.saleID = soldProducts.saleID GROUP by soldProducts.soldProductID;"
-    soldProducts_results = execute_query_dict(query).fetchall()
+        query = "SELECT soldProducts.soldProductID, sales.saleID, breadProducts.name as 'Product Name',  soldProducts.qtySold, soldProducts.lineTotal FROM soldProducts LEFT JOIN breadProducts on breadProducts.productID = soldProducts.productID LEFT JOIN sales on sales.saleID = soldProducts.saleID GROUP by soldProducts.soldProductID;"
+        soldProducts_results = execute_query(query).fetchall()
 
-    query = "SELECT customerID, name from customers;"
-    customers_results = execute_query_dict(query=query).fetchall()
+        query = "SELECT customerID, name from customers;"
+        customers_results = execute_query(query=query).fetchall()
 
-    query = "SELECT productID, name from breadProducts;"
-    products_results = execute_query_dict(query=query).fetchall()
-    
-    if request.method == 'POST':
-        # Add a Sale Feature
-        ## Add and Remove Product from Add Sale
-        if request.form.get('soldProduct'):
-            sales_create_count=int(request.form['soldProduct'])
-        elif request.form.get('removeProduct'):
-            sales_create_count=int(request.form['removeProduct'])
+        query = "SELECT productID, name from breadProducts;"
+        products_results = execute_query(query=query).fetchall()
 
-        elif request.form.get('submitSale'):
-            ### Gather Add Data, put all data in array. Check for Discrepancies.
-            sales_create_count = int(request.form['submitSale'])
-            customer = request.form['customer']
-            name_arr = []
-            qtySold_arr = []
-            lineTotal_arr = []
-
-            for i in range(1, sales_create_count+1):
-                name_arr.append(request.form.get("bread_"+str(i)))
-                qtySold_arr.append(request.form.get("qtySold_"+str(i)))
-                lineTotal_arr.append(round(float(request.form.get("lineTotal_"+str(i))), 2))
-
-            ### Add into Sale
-            query = "INSERT INTO sales (customerID, saleTotal) VALUES (%s, %s);"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (customer, sum(lineTotal_arr)))
-            mysql.connection.commit()
-            
-            ### Add into soldProducts
-            testing = []
-            for i in range(1, sales_create_count+1):
-                #### Get SaleID from Recent Insert
-                query = "SELECT max(saleID) from sales;"
-                saleID = execute_query_dict(query=query).fetchall()
-                saleID = saleID[0]['max(saleID)']
-
-                query = "INSERT INTO soldProducts(saleID, productID, qtySold, lineTotal) Values (%s, %s, %s, %s);"
-                cur = mysql.connection.cursor()
-                productID = execute_query_dict(query = f"Select productID from breadProducts where name = '{name_arr[i-1]}';" ).fetchall()
-                productID = productID[0]['productID']  # [{:}] list of dictionaries format.
-                cur.execute(query, (saleID, productID, qtySold_arr[i-1], lineTotal_arr[i-1]))
-                mysql.connection.commit()
-
-            return redirect(url_for('sales'))
+        return render_template('sales.html', sales=sales_results, soldProducts=soldProducts_results, customers=customers_results, products=products_results, row=0)
         
-        # Update a Sale Intro 
-        elif request.form.get('saleID'):
-            saleID = request.form.get('saleID')
-            query = f"SELECT * from soldProducts where saleID = {saleID};"
-            update_sales_results = execute_query_dict(query=query)
+    elif request.method == 'POST':
+        # Get Form Data
+        customer_id = request.form.get('customer')
+        products = request.form.getlist('products[]')
+        quantities = request.form.getlist('quantities[]')
 
-        # Gather Information to Update
-        elif request.form.get('updateLength'):
-            boxes = int(request.form.get('updateLength'))
-            saleID = int(request.form.get('updateSaleID'))
-            customerID = request.form.get('customer')
-            name_arr = []
-            qtySold_arr = []
-            lineTotal_arr = []
+        # Calculate lineTotal for each product
+        line_totals = []
+        for i in range(len(products)):
+            unitPrice_query = "SELECT unitPrice from breadProducts WHERE %s=productID;"
+            unitPrice_result = execute_query(query=unitPrice_query, query_params=(products[i])).fetchone()[0]
+            line_total = float(unitPrice_result) * float(quantities[i])
+            line_totals.append(line_total)
+        print(line_totals)
+        
+        # Calculate saleTotal
+        saleTotal = 0
+        for lineTotal in line_totals:
+            saleTotal += lineTotal
+        
+        # Add sale to sales Table
+        insert_sale_query = "INSERT INTO sales(customerID, saleTotal) VALUES (%s, %s)"
+        execute_query(query=insert_sale_query, query_params=(customer_id, saleTotal))
 
-            for i in range(1, boxes+1):
-                name_arr.append(request.form.get("bread_"+str(i)))
-                qtySold_arr.append(request.form.get("qtySold_"+str(i)))
-                lineTotal_arr.append(round(float(request.form.get("lineTotal_"+str(i))), 2))
-            
+        # Retrieve saleID 
+        saleID_query = "SELECT MAX(saleID) from sales;"
+        saleID = execute_query(query=saleID_query).fetchone()[0]
 
-            ### Update Sale
-            query = "UPDATE sales SET customerID = %s, saleTotal = %s WHERE saleID = %s;"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (customerID, sum(lineTotal_arr), saleID))
-            mysql.connection.commit()
-
-            ### Get Incrementer for soldProductsID
-            query = f"SELECT min(soldProductID) from soldProducts WHERE saleID = { saleID };"
-            soldProductID = execute_query_dict(query=query).fetchall()
-            soldProductID = soldProductID[0]['min(soldProductID)']
-            
-            ### Update soldProducts
-            for i in range(1, boxes+1):
-                query = "UPDATE soldProducts SET productID = %s, qtySold = %s, lineTotal = %s WHERE saleID = %s and soldProductID = %s;"
-                cur = mysql.connection.cursor()
-                #productID = db.execute_query_dict(db_connection=db_connection, query = f"Select productID from breadProducts where name = '{name_arr[i-1]}';" )
-                #productID = productID.fetchall()[0]['productID']  # [{:}] list of dictionaries format.
-                ## name_arr is already in product IDs for this Update Function.
-                cur.execute(query, (name_arr[i-1], qtySold_arr[i-1], lineTotal_arr[i-1], saleID, soldProductID))
-                mysql.connection.commit()
-                soldProductID += 1
-
-            return redirect(url_for('sales'))
-
-    return render_template('sales.html', sales=sales_results, soldProducts=soldProducts_results, customers=customers_results, products= products_results,count=sales_create_count, update_sales_results=update_sales_results, sale_id = int(saleID))
+        # Add products to soldProducts intersection table
+        for i in range(len(products)):
+            insert_sold_product_query = "INSERT INTO soldProducts(saleID, productID, qtySold, lineTotal) VALUES (%s, %s, %s, %s)"
+            execute_query(query=insert_sold_product_query, query_params=(saleID, products[i], quantities[i], line_totals[i]))
+        
+        return redirect('sales')
 
 
 # -- Delete a Sale
-@app.route("/delete_sales/<int:saleID>")
-def delete_sales(saleID):
-    ## Delete from sales
-    query = "DELETE FROM sales where saleID = '%s';"
-    cur = mysql.connection.cursor()
-    cur.execute(query, (saleID,))
-    mysql.connection.commit()
+@app.route("/sales/<int:saleID>", methods=["DELETE"])
+def deleteSale(saleID):
+    # Delete from soldProducts Intersection table
+    delete_soldProducts_query = "DELETE FROM soldProducts WHERE saleID = %s;"
+    execute_query(query=delete_soldProducts_query, query_params=(saleID,))
 
-    return redirect("/sales")
+    # Delete from sales table
+    delete_sale_query = "DELETE FROM sales WHERE saleID = %s"
+    execute_query(query=delete_sale_query, query_params=(saleID,))
+
+    response_data = {"message": "Allergen successfully deleted"}
+    return jsonify(response_data), 200
+
+
+# -- Load a Sale for an Update
+@app.route("/editSale/<int:saleID>", methods=["GET"])
+def editSale(saleID):
+    # Retrieve the sale details
+    sale_query = "SELECT * FROM sales WHERE saleID = %s"
+    sale_result = execute_query(query=sale_query, query_params=(saleID,)).fetchone()
+
+    # Retrieve the soldProducts for the sale
+    sold_products_query = "SELECT * FROM soldProducts WHERE saleID = %s"
+    sold_products_result = execute_query(query=sold_products_query, query_params=(saleID,)).fetchall()
+
+    # Retrieve other necessary data (customers, products, etc.)
+    customers_query = "SELECT customerID, name FROM customers"
+    customers = execute_query(query=customers_query).fetchall()
+
+    products_query = "SELECT productID, name FROM breadProducts"
+    products = execute_query(query=products_query).fetchall()
+
+    return render_template('editSale.html', sale=sale_result, soldProducts=sold_products_result, customers=customers, products=products, saleID=saleID)
+
+
+# -- Update a Sale
+@app.route("/updateSale/<int:saleID>", methods=["POST"])
+def updateSale(saleID):
+    try:
+        # Retrieve form data
+        customerID = int(request.form.get('customerID'))
+        soldProductIDs = [int(i) for i in request.form.getlist('soldProductIDs[]')]
+        productIDs = [int(i) for i in request.form.getlist('productIDs[]')]
+        quantitySolds = [int(i) for i in request.form.getlist('quantitySold[]')]
+        print(customerID, soldProductIDs, productIDs, quantitySolds)
+
+        line_totals = []
+        for i in range(len(soldProductIDs)):
+            unitPrice_query = "SELECT unitPrice from breadProducts WHERE productID=%s;"
+            unitPrice_result = execute_query(query=unitPrice_query, query_params=(soldProductIDs[i],)).fetchone()[0]
+
+            line_total = float(unitPrice_result) * float(quantitySolds[i])
+            line_totals.append(line_total)
+
+        # Calculate saleTotal
+        saleTotal = 0
+        for lineTotal in line_totals:
+            saleTotal += lineTotal
+        
+        # UPDATE sale to sales Table
+        update_sale_query = "UPDATE sales SET customerID=%s WHERE saleID=%s;"
+        execute_query(query=update_sale_query, query_params=(customerID, saleID))
+
+
+        # Add products to soldProducts intersection table
+        for i in range(len(soldProductIDs)):
+            insert_sold_product_query = "UPDATE soldProducts SET productID=%s, qtySold=%s, lineTotal=%s WHERE soldProductID=%s"
+            execute_query(query=insert_sold_product_query, query_params=(productIDs[i], quantitySolds[i], line_totals[i], soldProductIDs[i]))
+
+        response_data = {"message": "Product successfully updated"}
+        # return jsonify(response_data), 200
+        return redirect('/sales') # Redirect to the breadProducts page after processessing the form
+
+    except Exception as e:
+            # Handle exceptions, log the error, and return an appropriate response
+            print(f"Error updating product: {e}")
+            response_data = {"error": "Failed to update product"}
+            return jsonify(response_data), 500
 
 
 ### Cultures ###
@@ -400,8 +436,14 @@ def cultures():
         cultures_query = "SELECT * FROM cultures;"
         cultures_results = execute_query(query=cultures_query)
 
+        breadIDs_arr = []
+        breadIDs_query = "SELECT cultureID FROM breadProducts;"
+        breadIDs_results = execute_query(query=breadIDs_query)
+        for arr in breadIDs_results:
+            breadIDs_arr.append(arr[0])
+
         #Render the template with the cultures
-        return render_template('cultures.html', cultures=cultures_results) 
+        return render_template('cultures.html', cultures=cultures_results, breadIDs=breadIDs_arr) 
     
     elif request.method == "POST":
         # Retrieve form data
@@ -451,6 +493,7 @@ def allergens():
 
         # Redirect or render a respose
         return redirect('/allergens') # Redirect to the allergens page after processessing the form
+
 
 # -- Delete an Allergen
 @app.route("/allergens/<int:allergenID>", methods=["DELETE"])
