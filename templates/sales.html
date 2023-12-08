@@ -1,11 +1,85 @@
 {% extends "base_header.html" %}
+{% block title %} Sales Page{% endblock %}
 
 {% block content %}
-<div id="sales">
-  <p>&nbsp;</p>
-  <legend style="font-size:20px"><strong>Sales</strong></legend>
+<script>
+  function addProductRow() {
+    console.log("Adding product row");
+    const tableBody = document.querySelector('#productTable tbody');
+    const newRow = document.createElement('tr');
 
-<table border="1" cellpadding="5">
+    // Product dropdown
+    const productCell = document.createElement('td');
+    const productSelect = document.createElement('select');
+    productSelect.name = 'products[]';
+    {% for product in products %}
+      productSelect.innerHTML += `<option value="{{ product[0] }}">{{ product[1] }}</option>`;
+    {% endfor %}
+    productCell.appendChild(productSelect);
+
+    // Quantity input
+    const quantityCell = document.createElement('td');
+    const quantityInput = document.createElement('input');
+    quantityInput.type = 'number';
+    quantityInput.name = 'quantities[]';
+    quantityInput.min = 1;
+    quantityInput.required = true;
+    quantityCell.appendChild(quantityInput);
+
+    // Delete button
+    const deleteCell = document.createElement('td');
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.textContent = 'Delete';
+    deleteButton.onclick = function() {
+      tableBody.removeChild(newRow);
+    };
+    deleteCell.appendChild(deleteButton);
+
+    // Append cells to the new row
+    newRow.appendChild(productCell);
+    newRow.appendChild(quantityCell);
+    newRow.appendChild(deleteCell);
+
+    // Append the new row to the table body
+    tableBody.appendChild(newRow);
+  }
+
+  function deleteSale(saleID) { 
+      if (confirm("Are you sure you want to delete this sale?")) {
+          // Make an AJAX request to the server to delete the sale
+          var xhr = new XMLHttpRequest();
+          
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === XMLHttpRequest.DONE) {
+                  if (xhr.status === 200) {
+                      // Successful response from the server
+                      alert("Sale successfully deleted");
+                      // You might want to reload the page or update the UI here
+                      location.reload(); // This reloads the page; you can replace it with more sophisticated UI updates
+                  } else {
+                      // Handle error response from the server
+                      alert("Error deleting sale");
+                  }
+              }
+          };
+          
+          xhr.open("DELETE", "/sales/" + saleID, true);
+          xhr.send();
+      }
+  }
+  
+  function editSale(saleID) {
+        // Redirect to the editProduct route with the specified productID
+        window.location.href = "/editSale/" + saleID;
+    }
+
+</script>
+
+<h2>Sales</h2>
+<div id="sales">
+
+<table table border="1" cellpadding="5">
   <tr>
     <th>ID</th>
     <th>Customer</th>
@@ -15,220 +89,78 @@
 
   <!-- Iterates through each item in sales -->
   {% for sale in sales %}
-  <tr>
-    {% for key in sale.keys() %}  
-      {% if key == "Sale Total" %}
-      <td align="right">${{ sale[key] }} </td>
-      {% else %}
-      <td align="right">{{ sale[key] }} </td>
-      {% endif %}
-    {% endfor %}
-    <td><a href="/delete_sales/{{sale['saleID']}}" > <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+  <tr align="middle">
+      <td>{{ sale[0] }} </td>
+      <td>{{ sale[1] }} </td>
+      <td>${{ sale[2] }} </td>
+      <td><a href="#" onClick="editSale({{ sale[0] }})"> <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width = "25" height = "25">Edit</a></td>
+      <td><a href="#" onclick="deleteSale({{ sale[0] }})"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
   </tr>
   {% endfor %}
 </table>
 <br>
 </div> <!-- sales --end -->
 
+
 <div id="soldProducts">
   <br>
-  <legend style="font-size:20px"><strong>Sold Products</strong></legend>
-<!-- Header for soldProducts Table -->
-<table border="1" cellpadding="5">
-  <tr>
-    <th>ID</th>
-    <th>SaleID</th>
-    <th>Product Name</th>
-    <th>Quantity Sold</th>
-    <th>Line Total</th>
-  </tr>
-  <!-- Iterates through each item in soldProducts -->
-  {% for sold in soldProducts %}
-  <tr>
-    {% for key in sold.keys() %}  
-      {% if key == "lineTotal" %}
-      <td align="right">${{ sold[key] }} </td>
-      {% else %}
-      <td align="right">{{ sold[key] }} </td>
-      {% endif %}
-    {% endfor %}
-  </tr>
-  {% endfor %}
-</table>
-<br>
+    <legend style="font-size:20px"><strong>Sold Products</strong></legend>
+    <!-- Header for soldProducts Table -->
+      <table border="1" cellpadding="5">
+        <tr>
+          <th>ID</th>
+          <th>SaleID</th>
+          <th>Product Name</th>
+          <th>Quantity Sold</th>
+          <th>Line Total</th>
+        </tr>
+        <!-- Iterates through each item in soldProducts -->
+        {% for sold in soldProducts %}
+        <tr align="middle">
+            <td>{{ sold[0] }} </td>
+            <td>{{ sold[1] }} </td>
+            <td>{{ sold[2] }} </td>
+            <td>{{ sold[3] }} </td>
+            <td>${{ sold[4] }} </td>
+        </tr>
+        {% endfor %}
+      </table>
+  <br>
 </div> <!-- soldProducts -- end -->
 
 <div id="insert">
   <br>
   <form method="POST" name="addSale" id="addSale" action="/sales#addSale">
     <legend style="font-size:20px"><strong>Add a Sale<IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
-      <fieldset class="fields">
-      <table cellpadding="10">
-        <tr>
-          <td>
-            <label for="customer">Customer</label>
-            <select name="customer" id="customer">
+      <br>
+      <label for="customer">Customer </label><select name="customer" id="customer">
               {% for customer in customers %}
-              <option value={{ customer['customerID'] }}>{{ customer['customerID'] }}</option>
-              {% endfor %}
+              <option value="{{ customer[0] }}"> {{ customer[1] }}</option>
+              {% endfor %}  
             </select>
-          </td>
-        </tr>
-        {% for i in range(1, count+1) %} 
-        <tr>
-          <td>
-            <label for="bread">Product Name </label>
-            <select name="bread_{{i}}" id="bread">
-              {% for product in products %}
-              <option value="{{product['name']}}">{{product['name']}}</option>
-              {% endfor %}
-            </select>
-          </td>
-          <td>
-            <label>Quantity Sold</label> 
-            <input type="number" name="qtySold_{{i}}" required min="1">
-          </td>
-          <td>
-            <label>Line Total</label> 
-            <input type="number" name="lineTotal_{{i}}" required step=0.01 min=0.01>
-          </td>
-        </tr>
-        {% endfor %}
-        <tr>
-          <p> <strong>**Note** <br> Pressing Add a Product or Cancel Adding will erase input. Please add all boxes before entering data.</strong></p>
-        </tr>
-        <tr>
-          <td>
-            <input type="hidden" name="submitSale" value={{count}}>
-            <input type="submit" value ="Add this Sale to the Database">
-          </td>
-        </tr>
+            
 
-  </form>
-        <tr>
-        <form method="POST" name="addSale" id="addSale" action="/sales#addSale">
-          <td align="center">
-            Products : {{ count }}
-              <input type="hidden" name="soldProduct" value={{count+1}}>
-              <input type="submit" value ="Add a Product to this Sale">
-          </td>
-        </form>
-        {% if count > 1 %}
-        </form>
-        <form method="POST" name="addSale" id="addSale" action="/sales#addSale">
-          <td align="center">
-              <input type="hidden" name="removeProduct" value={{count-1}}>
-              <input type="submit" value ="Cancel Adding this Product">
-          </td>
-        </tr>
-        </form>
-        {% endif %}
-        </tr>
+      <table id="productTable">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+
       </table>
-      </fieldset>
+      
+      <button type="button" onclick="addProductRow()">Add Product</button>
+      <button type="submit">Submit Sale</button>
+  </form>
+
 </div><!-- insert -- end -->
 
-
-<div id="update">
-  <br>
-    <legend style="font-size:20px"><strong>Update a Sale<IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width = "25" height = "25"></strong></legend>
-      <fieldset class="fields">
-      <table cellpadding="10">
-        {% set boxes = namespace() %}
-        {% set saleIDP = namespace() %}
-
-        {% if update_sales_results == 0 %}
-        <tr>
-          <form method="POST" name="loadSale" id="loadSale" action="/sales#updateSale">
-            <td>
-              <input type="submit" value ="Auto-Populate (Based on Sale ID)">
-            </td>
-            <td>
-              <label for="saleID">Sale ID</label>
-              <select name="saleID" id="saleID">
-                {% for sale in sales %}
-                  <option value={{ sale['saleID'] }}>{{ sale['saleID'] }}</option>
-                {% endfor %}
-              </select>
-            </td>
-          </form>
-        {% endif %}
-
-        {% if update_sales_results != 0 %}
-        <tr>
-            <td>
-              <h2> <u>Sale {{ sale_id }}</u></h2>
-            </td>
-
-        <form method="POST" name="updateSale" action="/sales#updateSale">
-          <td>
-            <label for="customer">Customer</label>
-            <select name="customer" id="customer">
-              {% set cust_name = namespace() %}
-              {% for sale in sales %}
-                {% if sale["saleID"] == sale_id %}
-                  {% set cust_name.current = sale['Customer'] %}
-                {% endif %}
-              {% endfor %}
-              {% for customer in customers %}
-                {% if customer['name'] == cust_name.current %}
-                <option value={{ customer['customerID'] }} SELECTED>{{ customer['customerID'] }}</option>
-                {% else %}
-                <option value={{ customer['customerID'] }}>{{ customer['customerID'] }}</option>
-                {% endif %}
-              {% endfor %}
-            </select>
-          </td>
-        </tr>
-
-        {% for update in update_sales_results %}
-          {% set boxes.current = loop.length %}
-        <tr>
-          <td>
-            <label for="bread">Product Name</label>
-            <select name="bread_{{loop.index}}" id="bread">
-              
-              {% for product in products %}
-              {% if product['productID'] == update['productID'] %}
-              <option value= "{{ product['productID'] }}" SELECTED> {{ product['productID'] }}</option>
-              {% else %}
-              <option value= "{{ product['productID'] }}"> {{ product['productID'] }}</option>
-              {% endif %}
-              {% endfor %}
-            </select>
-          </td>
-
-          <td>
-            <label>Quantity Sold</label> 
-            <input type="number" name="qtySold_{{loop.index}}" required min="1" value={{ update['qtySold'] }}></input>
-          </td>
-          <td>
-            <label>Line Total</label> 
-            <input type="number" name="lineTotal_{{loop.index}}" required step=0.01 min=0.01 value={{ update['lineTotal'] }}>
-          </td>
-        </tr>
-        {% endfor %}
-        {% endif %}
-
-        {% if update_sales_results != 0 %}
-        <tr>
-          <td>
-            <input type="hidden" name="updateSaleID" id="updateSaleID" value={{ sale_id }}>
-            <input type="hidden" name="updateLength" id="updateLength" value={{ boxes.current }}>
-            <input type="submit" value ="Update this Sale">
-          </td>
-        </form>
-        
-        <form method="POST" name="cancelUpdate" action="/sales#updateSale">
-          <td>
-            <input type="hidden" name="cancelUpdate" id="cancelUpdate" value="True">
-            <input type="submit" value="Cancel Updating Sale">
-          </td>
-        </form>
-        {% endif %}
-        </tr>
-
-</div><!-- update -- end -->
 
 
 {% endblock %}

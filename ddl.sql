@@ -43,9 +43,9 @@ CREATE TABLE cultures (
 CREATE TABLE breadProducts (
   productID INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(45) NOT NULL,
-  unitPrice DECIMAL NOT NULL,
+  unitPrice DECIMAL(10,2) NOT NULL,
   count INT NOT NULL,
-  netWeight DECIMAL NOT NULL,
+  netWeight DECIMAL(10,2) NOT NULL,
   cultureID INT NOT NULL,
   PRIMARY KEY (productID),
   FOREIGN KEY (cultureID) references cultures(cultureID) ON DELETE RESTRICT
@@ -57,7 +57,7 @@ CREATE TABLE breadProducts (
 CREATE TABLE sales (
   saleID INT NOT NULL AUTO_INCREMENT,
   customerID INT NOT NULL,
-  saleTotal DECIMAL NOT NULL,
+  saleTotal DECIMAL(10,2) NOT NULL,
   PRIMARY KEY (saleID),
   FOREIGN KEY (customerID) references customers(customerID) ON DELETE RESTRICT
 );
@@ -70,7 +70,7 @@ CREATE TABLE soldProducts (
   saleID INT NOT NULL,
   productID INT NOT NULL,
   qtySold INT NOT NULL,
-  lineTotal DECIMAL NOT NULL,
+  lineTotal DECIMAL(10,2) NOT NULL,
   PRIMARY KEY (soldProductID),
   FOREIGN KEY (saleID) references sales(saleID) ON DELETE CASCADE,
   FOREIGN KEY (productID) references breadProducts(productID) ON DELETE CASCADE
@@ -115,7 +115,8 @@ VALUES
 ('France'),
 ('USA'),
 ('Iran'),
-('Italy');
+('Italy'),
+('Japan');
 
 -- -----------------------------------------------------
 -- DATA: breadProducts

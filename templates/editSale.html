@@ -1,0 +1,52 @@
+{% extends "base_header.html" %}
+{% block title %} Edit Sale Page {% endblock %}
+
+<!--sale, soldProducts, customers, products -->
+
+{% block content %}
+
+<div id="editSale">
+    <br>
+    <legend style="font-size:20px"><strong>Edit Sale Number {{ sale[0] }} <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width="25" height="25"></strong></legend>
+    <form method="POST" id="editSaleForm" action="{{ url_for('updateSale', saleID=saleID) }}">
+    
+    <!-- Display customer as a dropdown -->
+    <label for="customerID">Customer</label>
+    <select name="customerID">
+        {% for customer in customers %}
+        <option value="{{ customer[0] }}" {% if customer[0] == sale[1] %} selected {% endif %}> {{ customer[1] }} </option>
+        {% endfor %}
+    </select>
+
+    <table>
+        <thead>
+            <tr>
+                <th>soldProduct ID</th>
+                <th>Product Name</th>
+                <th>Quantity Sold</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for soldProduct in soldProducts %}
+            <tr>
+                <td><input type="hidden" name="soldProductIDs[]" value="{{ soldProduct[0] }}">{{ soldProduct[0] }}</td>
+                <td>
+                <select name="productIDs[]">
+                    {% for product in products %}
+                        <option value="{{ product[0] }}" {% if soldProduct[2] == product[0] %} selected {% endif %}> {{ product[1] }} </option>
+                    {% endfor %}
+                </td>
+                
+                <td><input type="number" name="quantitySold[]" value="{{ soldProduct[3] }}"></td>
+            {% endfor %}      
+            </tr>
+             
+        </tbody>
+    </table>
+
+    <button type="submit">Update Sale</button>
+  </form>
+</div><!-- editSale -- end -->
+
+
+{% endblock %}

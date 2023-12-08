@@ -1,8 +1,13 @@
 <html>
 <head>
 <title>Global Bread Co.</title>
-<link href="style.css" rel="stylesheet" type="text/css" />
-</head>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+{% for myscript in jsscripts %}
+<script src="/static/{{myscript}}"></script>
+{% endfor %}
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/static/style/style.css">
 
 <h1> 
   <IMG SRC="{{url_for('static', filename='Logo.png')}}" width = "85" height = "85"> 
@@ -10,9 +15,10 @@
 </h1>
 
 [ <a href="{{ url_for('home')}}">HOME</a> | <a href="{{ url_for('breadProducts')}}">BREAD PRODUCTS</a> | <a href="{{ url_for('customers')}}">CUSTOMERS</a> 
-| <a href="{{ url_for('sales')}}">SALES</a> | <a href="{{ url_for('cultures')}}">CULTURES</a> | <a href="{{ url_for('allergens')}}">ALLERGENS</a> |
+| <a href="{{ url_for('sales')}}">SALES</a> | <a href="{{ url_for('cultures')}}">CULTURES</a> | <a href="{{ url_for('allergens')}}">ALLERGENS</a>
  <!-- <a href="reset_database.html"> Reset Database</a> </a> -->]
 
+</head>
 {% block content %} {% endblock %}
 
 </html>

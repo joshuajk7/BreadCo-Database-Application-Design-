@@ -19,7 +19,7 @@
                       location.reload(); // This reloads the page; you can replace it with more sophisticated UI updates
                   } else {
                       // Handle error response from the server
-                      alert("Error deleting Culture");
+                      alert("Cannot delete culture. Present in a bread product.");
                   }
               }
           };
@@ -34,6 +34,7 @@
 <h2>Cultures</h2>
 
 <table border="1" cellpadding="5">
+    ** Culture present in Product (restricted deletion)
     <tr>
         <th>ID</th>
         <th>Name</th>
@@ -43,7 +44,11 @@
     <tr>
         <td>{{ item[0] }}</td>
         <td>{{ item[1] }}</td>
-        <td><a href="#" onclick="deleteCulture({{ item[0] }})"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+        {% if item[0] in breadIDs %}
+            <td> ** </td>
+        {% else %}
+            <td><a href="#" onclick="deleteCulture({{ item[0] }})"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>
