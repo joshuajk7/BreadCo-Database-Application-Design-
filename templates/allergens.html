@@ -30,53 +30,53 @@
   }
 </script>
 
+<div class="container-fluid mt-4">
+    <h2>Allergens</h2>
+    <table>
+        <tr align="middle">
+            <th>ID</th>
+            <th>Name</th>
+            <th > <a href="/allergens#addAllergen" class="btn btn-outline-primary"><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> New</a></th>
+        </tr>
+        {% for item in allergens %}
+        <tr align="middle">
+            <td>{{ item[0] }}</td>
+            <td>{{ item[1] }}</td>
+            <td><a href="#" onclick="deleteAllergen({{ item[0] }})" class="btn btn-outline-danger"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
-<h2>Allergens</h2>
-
-<table border="1" cellpadding="5">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> <a href="#" onClick="newAllergen()">New</a></th>
-    </tr>
-    {% for item in allergens %}
-    <tr>
-        <td>{{ item[0] }}</td>
-        <td>{{ item[1] }}</td>
-        <td><a href="#" onclick="deleteAllergen({{ item[0] }})"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
-    </tr>
-    {% endfor %}
-    <br>
-</table>
-
-<h2> Allergens in Products </h2>
-<table border="1" cellpadding="5">
-    <tr>
-        <th>ID</th>
-        <th>Product Name</th>
-        <th>Allergen</th>
-    </tr>
-    {% for item in allergensProducts %}
-    <tr>
-        <td>{{ item[0] }}</td>
-        <td>{{ item[1] }}</td>
-        <td>{{ item[2] }}</td>
-    </tr>
-    {% endfor %}
-</table>
-
+<div class="container-fluid mt-4">
+    <h2> Allergens in Products </h2>
+    <table style="background:#FAFCFF;">
+        <tr align="middle">
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Allergen</th>
+        </tr>
+        {% for item in allergensProducts %}
+        <tr align="middle">
+            <td>{{ item[0] }}</td>
+            <td>{{ item[1] }}</td>
+            <td>{{ item[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
 <!--Form to add a new allergen-->
-<div id="insert">
-    <br>
+<div class="container-fluid mt-4">
     <form method="POST" id="addAllergen" action= "/allergens">
         <legend><strong> Add Allergen <IMG SRC = "{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
             <fieldset class="fields">
-                <label for="name"> Name </label> <input type="text" name="name">
+                <label for="name"> Name </label> <input type="text" name="name" required>
 
-            </fieldset>    
-                <input class="btn" type="submit" id="addAllergen" value="Add allergen">
-                <input class="btn" type="button" value="Cancel" onclick="allergens()">
+            </fieldset>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            <input class="btn btn-outline-primary mt-1" type="submit" id="addAllergen" value="Add allergen">
+            <a href="/allergens#" class="btn btn-outline-secondary mt-1">Back to Top</a>
     </form>
-</div><!-- Insert-->
+</div>
 {% endblock %}

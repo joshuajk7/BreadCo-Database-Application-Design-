@@ -76,37 +76,35 @@
 
 </script>
 
-<h2>Sales</h2>
-<div id="sales">
+<div class="container-fluid mt-4">
+  <h2>Sales</h2>
+  <table>
+    <tr align="middle">
+      <th>ID</th>
+      <th>Customer</th>
+      <th>Sale Total</th>
+      <th><a href="/sales#addSale" class="btn btn-outline-primary"><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> New</a></th>
+      <th></th>
+    </tr>
 
-<table table border="1" cellpadding="5">
-  <tr>
-    <th>ID</th>
-    <th>Customer</th>
-    <th>Sale Total</th>
-    <th><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> <a href="/sales#addSale" >New</a></th>
-  </tr>
-
-  <!-- Iterates through each item in sales -->
-  {% for sale in sales %}
-  <tr align="middle">
-      <td>{{ sale[0] }} </td>
-      <td>{{ sale[1] }} </td>
-      <td>${{ sale[2] }} </td>
-      <td><a href="#" onClick="editSale({{ sale[0] }})"> <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width = "25" height = "25">Edit</a></td>
-      <td><a href="#" onclick="deleteSale({{ sale[0] }})"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
-  </tr>
-  {% endfor %}
-</table>
-<br>
+    <!-- Iterates through each item in sales -->
+    {% for sale in sales %}
+    <tr align="middle">
+        <td>{{ sale[0] }} </td>
+        <td>{{ sale[1] }} </td>
+        <td>${{ sale[2] }} </td>
+        <td><a href="#" onClick="editSale({{ sale[0] }})" class="btn btn-outline-success"> <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width = "25" height = "25">Edit</a></td>
+        <td><a href="#" onclick="deleteSale({{ sale[0] }})" class="btn btn-outline-danger"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+    </tr>
+    {% endfor %}
+  </table>
 </div> <!-- sales --end -->
 
 
-<div id="soldProducts">
-  <br>
-    <legend style="font-size:20px"><strong>Sold Products</strong></legend>
+<div class="container-fluid mt-4">
+    <h2>Sold Products</h2>
     <!-- Header for soldProducts Table -->
-      <table border="1" cellpadding="5">
+      <table>
         <tr>
           <th>ID</th>
           <th>SaleID</th>
@@ -125,20 +123,18 @@
         </tr>
         {% endfor %}
       </table>
-  <br>
 </div> <!-- soldProducts -- end -->
 
-<div id="insert">
-  <br>
+
+<div class="container-fluid mt-4">
   <form method="POST" name="addSale" id="addSale" action="/sales#addSale">
     <legend style="font-size:20px"><strong>Add a Sale<IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
-      <br>
-      <label for="customer">Customer </label><select name="customer" id="customer">
-              {% for customer in customers %}
-              <option value="{{ customer[0] }}"> {{ customer[1] }}</option>
-              {% endfor %}  
-            </select>
-            
+      <label for="customer">Customer </label>
+      <select name="customer" id="customer">
+        {% for customer in customers %}
+        <option value="{{ customer[0] }}"> {{ customer[1] }}</option>
+        {% endfor %}  
+      </select>
 
       <table id="productTable">
         <thead>
@@ -148,17 +144,15 @@
             <th>Action</th>
           </tr>
         </thead>
-
         <tbody>
 
         </tbody>
-
       </table>
       
-      <button type="button" onclick="addProductRow()">Add Product</button>
-      <button type="submit">Submit Sale</button>
+      <button type="button" onclick="addProductRow()" class="btn btn-outline-info">Add Product</button>
+      <button type="submit" class="btn btn-outline-primary">Submit Sale</button>
+      <a href="/sales#" class="btn btn-outline-secondary mt-1">Back to Top</a>
   </form>
-
 </div><!-- insert -- end -->
 
 

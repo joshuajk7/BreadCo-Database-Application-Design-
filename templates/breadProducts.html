@@ -37,47 +37,48 @@
   }
 </script>
   
-
-<h2>Bread Products</h2>
-
-<table border="1" cellpadding="5">
+<div class="container-fluid mt-4">
+  <h2>Bread Products</h2>
+  <table>
     <thead>
     <tr>
-    <th>ID</th>
-    <th>Name</th>
-    <th>Unit Price</th>
-    <th>Count</th>
-    <th>Net Weight</th>
-    <th>Culture</th>
-    <th>Allergen(s)</th>
-  </tr>
-  {% for item in breadProducts %}
-  <tr align="middle">
-    <td>{{ item[0] }}</td> 
-    <td>{{ item[1] }}</td>
-    <td>${{ item[2] }}</td>
-    <td>{{ item[3] }}</td>
-    <td>{{ item[4] }} oz</td>
-    <td>{{ item[5] }}</td>
-    <td>{{ item[6] }}</td>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Unit Price</th>
+      <th>Count</th>
+      <th>Net Weight</th>
+      <th>Culture</th>
+      <th>Allergen(s)</th>
+      <th> <a href="/breadProducts#addProduct" class="btn btn-outline-primary"><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> New</a></th>
+      <th></th>
+      </tr>
+    {% for item in breadProducts %}
+    <tr align="middle">
+      <td>{{ item[0] }}</td> 
+      <td>{{ item[1] }}</td>
+      <td>${{ item[2] }}</td>
+      <td>{{ item[3] }}</td>
+      <td>{{ item[4] }} oz</td>
+      <td>{{ item[5] }}</td>
+      <td>{{ item[6] }}</td>
 
-    <!--This is handled in the webapp.py file, item[0] is the id--> 
-    <td><a href="#" onClick="editProduct({{ item[0] }})"> <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width = "25" height = "25">Edit</a></td>
-    <td><a href="#" onclick="deleteProduct({{ item[0] }})"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
-  </tr>
-  {% endfor %}
+      <!--This is handled in the webapp.py file, item[0] is the id--> 
+      <td><a href="#" onClick="editProduct({{ item[0] }})" class="btn btn-outline-success"> <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width = "25" height = "25">Edit</a></td>
+      <td><a href="#" onclick="deleteProduct({{ item[0] }})" class="btn btn-outline-danger"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+    </tr>
+    {% endfor %}
   </table>
+</div>
 
 <!--Form to add a new breadProduct-->
-<div id="insert">
-    <br>
+<div class="container-fluid mt-4">
     <form method="POST" id="addProduct" action = "/breadProducts">
         <legend><strong> Add Bread Product <IMG SRC = "{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
           <fieldset class="fields">
-            <label for="name"> Name </label> <input type="text" name="name">
-            <label for="unitPrice"> Unit Price </label> <input type="number" name="unitPrice" step="0.01" min="0.01">
-            <label for="count"> Count </label> <input type="number" name="count">
-            <label for="netWeight"> Net Weight (oz)</label> <input type="number" name="netWeight" step="0.01" min="0.01"> &nbsp; &nbsp;
+            <label for="name"> Name </label> <input type="text" name="name" required> &nbsp;
+            <label for="unitPrice"> Unit Price ($) </label> <input type="number" name="unitPrice" step="0.01" min="0.01" required> &nbsp;
+            <label for="count"> Count </label> <input type="number" name="count" required> &nbsp;
+            <label for="netWeight"> Net Weight (oz)</label> <input type="number" name="netWeight" step="0.01" min="0.01" required> &nbsp;
 
             <label for="culture"> Culture </label>
               <select name="cultureID">
@@ -85,27 +86,29 @@
                 <option value="{{ culture[0] }}"> {{ culture[1] }}</option>
                 {% endfor %}
               </select>          
-
-              <tr>
+            
                 <br> <br>
-                <td><label>Allergen(s):</label></td>
-                <!--This is dynamically populated with all availble certifications-->
-                <td>
-                  {% for allergen in allergens %}
-                  <div>
-                  <!-- <input type ="checkbox" id="allergen" name="allergen" value="allergen"> <label for="allergen"> {{ allergen[1] }} </label> <br> -->
-                  <input type="checkbox" id="allergen_{{ allergen[0] }}" name="allergens[]" value="{{ allergen[0] }}">
-                  <label for="allergen_{{ allergen[0] }}">{{ allergen[1] }}</label>
-                  </div>
-                  {% endfor %}
-                </select><br>
-                </td>
-              </tr>
-            </table>
 
-      </fieldset>
-          <input class="btn" type="submit" id="addProduct" value="Add Product">
-          <input class="btn" type="button" value="Cancel" onClick="browseProduct()">
+              <table style="background-color: #FAFCFF; border: None">
+                <tr style="background-color: #FAFCFF; border: None">
+                  <td style="background-color: #FAFCFF; border: None"><label>Allergen(s):</label></td>
+                  <!--This is dynamically populated with all availble certifications-->
+                  <td style="background-color: #FAFCFF; border: None">
+                    {% for allergen in allergens %}
+                    <div>
+                    <input type="checkbox" id="allergen_{{ allergen[0] }}" name="allergens[]" value="{{ allergen[0] }}">
+                    <label for="allergen_{{ allergen[0] }}">{{ allergen[1] }}</label>
+                    </div>
+                    {% endfor %}
+                  </select>
+                  </td>
+                </tr>
+              </table>
+
+          </fieldset>
+
+          <input class="btn btn-outline-primary mt-2" type="submit" id="addProduct" value="Add Product">
+          <a href="/breadProducts#" class="btn btn-outline-secondary mt-2">Back to Top</a>
 	</form> 
 </div><!-- Insert -->
 {% endblock %}

@@ -498,11 +498,8 @@ def allergens():
 # -- Delete an Allergen
 @app.route("/allergens/<int:allergenID>", methods=["DELETE"])
 def deleteAllergen(allergenID):
-    # Delete allergen's connections to M:N (allergensProducts)
-    delete_allergensProducts_query = "DELETE FROM allergensProducts WHERE allergenID=%s;"
-    execute_query(query=delete_allergensProducts_query, query_params=(allergenID,))
 
-    # Then Delete allergen (allergens)
+    # Delete allergen (allergens)
     delete_allergens_query = "DELETE FROM allergens WHERE allergenID=%s;"
     execute_query(query=delete_allergens_query, query_params=(allergenID,))
 

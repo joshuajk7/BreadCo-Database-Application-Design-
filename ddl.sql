@@ -68,12 +68,12 @@ CREATE TABLE sales (
 CREATE TABLE soldProducts (
   soldProductID INT NOT NULL AUTO_INCREMENT,
   saleID INT NOT NULL,
-  productID INT NOT NULL,
+  productID INT NULL,
   qtySold INT NOT NULL,
   lineTotal DECIMAL(10,2) NOT NULL,
   PRIMARY KEY (soldProductID),
   FOREIGN KEY (saleID) references sales(saleID) ON DELETE CASCADE,
-  FOREIGN KEY (productID) references breadProducts(productID) ON DELETE CASCADE
+  FOREIGN KEY (productID) references breadProducts(productID) ON DELETE SET NULL
 );
 
 -- -----------------------------------------------------
@@ -90,8 +90,8 @@ CREATE TABLE allergens (
 -- -----------------------------------------------------
 CREATE TABLE allergensProducts (
   allergensProductID INT NOT NULL AUTO_INCREMENT,
-  productID INT NULL,
-  allergenID INT NULL,
+  productID INT NOT NULL,
+  allergenID INT NOT NULL,
   PRIMARY KEY (allergensProductID),
   FOREIGN KEY (productID) references breadProducts(productID) ON DELETE CASCADE,
   FOREIGN KEY (allergenID) references allergens(allergenID) ON DELETE CASCADE
