@@ -1,0 +1,81 @@
+<html>
+<head>
+<!-- 
+# Citation for Bootstrap:
+# Date: 12/9/2023
+# Taken from Bootstrap Website
+# Use: Framework for CSS design and styling
+# Source URL: https://getbootstrap.com/docs/5.3/getting-started/introduction/
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+<style>
+  /* Background Color for navbar and background */
+  .navbar-custom {
+    background-color: #FFEAD7;
+  } 
+  .bg-custom {
+    background-color: #FAFCFF;
+  }
+
+  /* Table Styling + Unofficial Tables */
+  table {
+    border: 1px solid;
+  }
+  table, th, tr, td {
+  border-bottom: 1px solid;
+  border-top: 1px solid;
+  border-collapse: collapse;
+  padding: 6px;
+  }
+  th{
+    background-color: #efc49ec7;
+  }
+  tr:nth-child(odd) {
+    background-color: #ffead755;
+  }
+</style>
+
+<title>Global Bread Co.</title>
+
+<!-- Navigation Bar -->
+<nav class= "navbar navbar-expand-xl navbar-custom">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('home')}}">
+      <IMG SRC="{{url_for('static', filename='Logo.png')}}" width = "85" height = "85"> 
+      Global Bread Co.
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" data-toggle="tab" aria-current="page" href="{{ url_for('home')}}">Home</a>
+        <a class="nav-link" data-toggle="tab" href="{{ url_for('breadProducts')}}">Bread Products</a>
+        <a class="nav-link" data-toggle="tab" href="{{ url_for('customers')}}">Customers</a>
+        <a class="nav-link" data-toggle="tab" href="{{ url_for('sales')}}">Sales</a>
+        <a class="nav-link" data-toggle="tab" href="{{ url_for('cultures')}}">Cultures</a>
+        <a class="nav-link" data-toggle="tab" href="{{ url_for('allergens')}}">Allergens</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+</head>
+
+<body class=bg-custom>
+{% block content %} {% endblock %}
+
+<!-- Footer -->
+<div class="container-fluid mt-4"
+  <footer>
+    <p>Copyright 	&#169;2023; Developed by Thong Thomas Nguyen and Joshua Kim</p>
+  </footer>
+</div> <!-- Footer-end -->
+
+</body>
+</html>

@@ -1,11 +1,10 @@
-{% extends "layout.html" %}
+{% extends "base_header.html" %}
 {% block title %} customers Page {% endblock %}
 
 
 {% block content %} 
 
 <script>
-
     function editCustomer(customerID) {
         // Redirect to the editProduct route with the specified customerID
         window.location.href = "/editCustomer/" + customerID;
@@ -13,18 +12,18 @@
 
      function deleteCustomer(customerID) {
       if (confirm("Are you sure you want to delete this customer?")) {
-          // Make an AJAX request to the server to delete the customer
+          // JS request to delete the customer
           var xhr = new XMLHttpRequest();
           
           xhr.onreadystatechange = function() {
               if (xhr.readyState === XMLHttpRequest.DONE) {
                   if (xhr.status === 200) {
-                      // Successful response from the server
+                      // Success message for customer being deleted
                       alert("Customer successfully deleted");
-                      // You might want to reload the page or update the UI here
-                      location.reload(); // This reloads the page; you can replace it with more sophisticated UI updates
+                      // Redirect to the same page
+                      location.reload();
                   } else {
-                      // Handle error response from the server
+                      // Error for deleting customer
                       alert("Error deleting customer");
                   }
               }
@@ -36,56 +35,65 @@
   }
 </script>
 
-<h2>Customers</h2>
-
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Phone Number</th>
-        <th>Street Address</th>
-        <th>City</th>
-        <th>State</th>
-        <th>zipCode</th>
+<!-- (Read) Customers Table -->
+<div class="container-fluid mt-4">
+    <h2>Customers</h2>
+    <table table>
+        **** Customer present in Sale (restricted deletion)
+        <tr align="middle">
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Street Address</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip Code</th>
+            <th><a href="/customers#addCustomer" class="btn btn-outline-primary"> <IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> New</a></th>
+            <th></th>
+        </tr>
+        {% for customer in customers %}
+        <tr align="middle">
+            <td>{{ customer[0] }}</td>
+            <td>{{ customer[1] }}</td>
+            <td>{{ customer[2] }}</td>
+            <td>{{ customer[3] }}</td>
+            <td>{{ customer[4] }}</td>
+            <td>{{ customer[5] }}</td>
+            <td>{{ customer[6] }}</td>
+            <td>{{ customer[7] }}</td>
+            <td><a href="#" onclick="editCustomer({{ customer[0] }})" class="btn btn-outline-success"> <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width = "25" height = "25">Edit</a></td>
+            {% if customer[0] in saleIDs %}
+                <td><button type="button" class="btn btn-secondary" disabled> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+            {% else %}
+                <td><a href="#" onclick="deleteCustomer({{ customer[0] }})" class="btn btn-outline-danger"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+            {% endif %}
         
+        </tr>
+        {% endfor %}
+    </table>
+</div> <!-- (Read) Customers Table: end -->
 
-        <th><IMG SRC="new_icon.png" width = "25" height = "25"> <a href="#" onClick="newCustomer()">New</a></th>
-    </tr>
-    {% for customer in customers %}
-    <tr>
-        <td>{{ customer[0] }}</td>
-        <td>{{ customer[1] }}</td>
-        <td>{{ customer[2] }}</td>
-        <td>{{ customer[3] }}</td>
-        <td>{{ customer[4] }}</td>
-        <td>{{ customer[5] }}</td>
-        <td>{{ customer[6] }}</td>
-        <td>{{ customer[7] }}</td>
-        <td><a href="#" onclick="editCustomer({{ customer[0] }})"> <IMG SRC="edit_icon.png" width = "25" height = "25">Edit</a></td>
-        <td><a href="#" onclick="deleteCustomer({{ customer[0] }})"> <IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
-    </tr>
-    {% endfor %}
-</table>
-
-<!--Form to add a new customer-->
-<div id="insert">
-    <br>
+<!-- (Create) Add a customer -->
+<div class="container-fluid mt-4">
     <form method="POST" id="addCustomer" action= "/customers">
-        <legend><strong> Add Customer <IMG SRC = "new_icon.png" width = "25" height = "25"></strong></legend>
+        <legend><strong> Add Customer <IMG SRC = "{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
             <fieldset class="fields">
-                <label for="name"> Name </label> <input type="text" name="name">
-                <label for="email"> Email </label> <input type="email" name="email">
-                <label for="phoneNumber"> Phone Number </label> <input type="tel" name="phoneNumber">
-                <label for="streetAddress"> Street Address </label> <input type="text" name="streetAddress">
-                <label for="city"> City </label> <input type="text" name="city">
-                <label for="state"> State </label> <input type="text" name="state">
-                <label for="zipCode"> zipCode </label> <input type="text" name="zipCode">
-
-            </fieldset>    
-                <input class="btn" type="submit" id="addCustomer" value="Add Customer">
-                <input class="btn" type="button" value="Cancel" onclick="customers()">
+                <label for="name"> Name </label> <input type="text" name="name" required> &nbsp;
+                <label for="email"> Email </label> <input type="email" name="email" required> &nbsp;
+                <label for="phoneNumber"> Phone Number </label> <input type="tel" name="phoneNumber" required> &nbsp;
+                <label for="streetAddress"> Street Address </label> <input type="text" name="streetAddress" required> &nbsp;
+                <label for="city"> City </label> <input type="text" name="city" required>
+                <br> <br>
+                <label for="state"> State </label> <input type="text" name="state" required>
+                &nbsp;
+                <label for="zipCode"> Zip Code </label> <input type="text" name="zipCode" required>
+                
+            </fieldset>
+            &nbsp; &nbsp; &nbsp; &nbsp;
+            <input class="btn btn-outline-primary mt-2" type="submit" id="addCustomer" value="Add Customer">
+            <a href="/customers#" class="btn btn-outline-secondary mt-2">Back to Top</a>
     </form>
-</div><!-- Insert-->
+</div> <!-- (Create) Add a customer: end -->
 
 {% endblock %}

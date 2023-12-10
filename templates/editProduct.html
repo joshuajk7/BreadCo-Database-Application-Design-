@@ -1,60 +1,60 @@
-{% extends "layout.html" %}
-{% block title %} Edit Bread Products Page{% endblock %}
+{% extends "base_header.html" %}
+{% block title %} Bread Products Page{% endblock %}
 
 
 {% block content %}
+<div class="container-fluid mt-4">
+    <form method="POST" id="editProductForm" action="{{ url_for('updateProduct', productID=productID) }}">
+        <!-- Display product details -->
+        {% for attribute in product %}
 
-<form method="POST" id="editProductForm" action="{{ url_for('updateProduct', productID=productID) }}">
-    <!-- Display product details -->
-    {% for attribute in product %}
+        <label for="productID"> Product ID: {{ attribute[0] }} </label>
+        <br><br>
 
-    <br>
-    <label for="productID"> Product ID: {{ attribute[0] }} </label>
-    <br><br>
+        <label for="name">Name</label>
+        <input type="text" name="name" value="{{ attribute[1] }}" required> &nbsp;
 
-    <label for="name">Name</label>
-    <input type="text" name="name" value="{{ attribute[1] }}" required>
+        <label for="unitPrice">Unit Price ($)</label>
+        <input type="text" name="unitPrice" value="{{ attribute[2] }}" required> &nbsp;
 
-    <label for="unitPrice">Unit Price</label>
-    <input type="text" name="unitPrice" value="{{ attribute[2] }}" required>
+        <label for="count">Count</label>
+        <input type="text" name="count" value="{{ attribute[3] }}" required> &nbsp;
 
-    <label for="count">Count</label>
-    <input type="text" name="count" value="{{ attribute[3] }}" required>
+        <label for="netWeight">Net Weight (oz)</label>
+        <input type="text" name="netWeight" value="{{ attribute[4] }}" required> &nbsp;
 
-    <label for="netWeight">Net Weight</label>
-    <input type="text" name="netWeight" value="{{ attribute[4] }}" required>
-
-    <label for="stock">Stock</label>
-    <input type="text" name="stock" value="{{ attribute[5] }}" required>
-
-    {% endfor %}
-
-    <br><br>
-    <!-- Display culture as a dropdown -->
-    <label for="culture">Culture {{ selected_cultureID[0] }} </label>
-    <select name="cultureID">
-        {% for culture in all_cultures %}
-
-        <option value="{{ culture[0] }}" {% if culture[0] == selected_cultureID[0] %} selected {% endif %}> {{ culture[1] }} </option>
+        <label for="stock">Stock</label>
+        <input type="text" name="stock" value="{{ attribute[5] }}" required> &nbsp;
 
         {% endfor %}
-    </select>
-    
-    <br><br>
-    <!-- Display allergens with checkboxes -->
-    <label>Allergen(s) </label><br>
-    {% for allergen in all_allergens %}
 
-        <label>ID:{{ allergen[0] }} </label>
+        <br><br>
 
-        <input type="checkbox" name="allergens[]" value="{{ allergen[0] }}" {% if (allergen[0],) in selected_allergens %} checked {% endif %}>
-        <!-- allergen[0] -> int:  and  select_allergens[0] = (int,)     so must match by (allergens[0])-->
+        <!-- Display culture as a dropdown -->
+        <label for="culture">Culture</label>
+        <select name="cultureID">
+            {% for culture in all_cultures %}
 
-        <label>{{ allergen[1] }}</label><br>
-    {% endfor %}
-    <br>
+            <option value="{{ culture[0] }}" {% if culture[0] == selected_cultureID[0] %} selected {% endif %}> {{ culture[1] }} </option>
 
-    <input type="submit" value="Update Product">
-</form>
+            {% endfor %}
+        </select>
+        
+        <br><br>
+        
+        <!-- Display allergens with checkboxes -->
+        <label>Allergen(s) </label><br>
+        {% for allergen in all_allergens %}
+            <label>ID:{{ allergen[0] }} </label>
+            <input type="checkbox" name="allergens[]" value="{{ allergen[0] }}" {% if (allergen[0],) in selected_allergens %} checked {% endif %}>
+            <label>{{ allergen[1] }}</label><br>
+        {% endfor %}
+        <br>
+
+        <input type="submit" value="Update Product" class="btn btn-outline-success"> 
+        &nbsp;&nbsp;&nbsp;
+        <a href="/breadProducts" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>
 
 {% endblock %}

@@ -1,25 +1,26 @@
-{% extends "layout.html" %}
+{% extends "base_header.html" %}
 {% block title %} cultures Page {% endblock %}
 
 
 {% block content %} 
 
 <script>
+     // JS function used to delete the culture through pop-up OK & Cancel
      function deleteCulture(cultureID) {
       if (confirm("Are you sure you want to delete this culture?")) {
-          // Make an AJAX request to the server to delete the culture
+          // Script to server to delete culture
           var xhr = new XMLHttpRequest();
           
           xhr.onreadystatechange = function() {
               if (xhr.readyState === XMLHttpRequest.DONE) {
                   if (xhr.status === 200) {
-                      // Successful response from the server
+                      // Successful deletion of culture
                       alert("Culture successfully deleted");
-                      // You might want to reload the page or update the UI here
-                      location.reload(); // This reloads the page; you can replace it with more sophisticated UI updates
+                      // Redirect to same page
+                      location.reload();
                   } else {
-                      // Handle error response from the server
-                      alert("Error deleting Culture");
+                      // Error Restriction in Case
+                      alert("Cannot delete culture. Present in a bread product.");
                   }
               }
           };
@@ -30,34 +31,42 @@
   }
 </script>
 
-<h2>Cultures</h2>
+<!-- (Read) Cultures Table -->
+<div class="container-fluid mt-4">
+    <h2>Cultures</h2>
+    <table >
+        **** Culture present in Product (restricted deletion)
+        <tr align="middle">
+            <th>ID</th>
+            <th>Name</th>
+            <th><a href="/cultures#addCulture" class="btn btn-outline-primary"><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> New</a></th>
+        </tr>
+        {% for item in cultures %}
+        <tr align="middle">
+            <td>{{ item[0] }}</td>
+            <td>{{ item[1] }}</td>
+            {% if item[0] in breadIDs %}
+                <td><button type="button" class="btn btn-secondary" disabled> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+            {% else %}
+                <td><a href="#" onclick="deleteCulture({{ item[0] }})" class="btn btn-outline-danger"> <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+</div> <!-- (Read) Cultures Table: end-->
 
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th><IMG SRC="new_icon.png" width = "25" height = "25"> <a href="#" onClick="newCulture()">New</a></th>
-    </tr>
-    {% for item in cultures %}
-    <tr>
-        <td>{{ item[0] }}</td>
-        <td>{{ item[1] }}</td>
-        <td><a href="#" onclick="deleteCulture({{ item[0] }})"> <IMG SRC="delete_icon.png" width = "25" height = "25">Delete</a></td>
-    </tr>
-    {% endfor %}
-</table>
-
-<!--Form to add a new culture-->
-<div id="insert">
-    <br>
+<!--(Create) Form to add a new culture-->
+<div class="container-fluid mt-4">
     <form method="POST" id="addCulture" action= "/cultures">
-        <legend><strong> Add culture <IMG SRC = "new_icon.png" width = "25" height = "25"></strong></legend>
+        <legend><strong> Add culture <IMG SRC = "{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
             <fieldset class="fields">
-                <label for="name"> Name </label> <input type="text" name="name">
-
-            </fieldset>    
-                <input class="btn" type="submit" id="addCulture" value="Add culture">
-                <input class="btn" type="button" value="Cancel" onclick="cultures()">
+                <label for="name"> Name </label> <input type="text" name="name" required>
+            </fieldset>
+              
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  
+                <input class="btn btn-outline-primary mt-1" type="submit" id="addCulture" value="Add culture">
+                <a href="/cultures#" class="btn btn-outline-secondary mt-1">Back to Top</a>
     </form>
-</div><!-- Insert-->
+</div><!-- (Create) Form to add a new culture: end -->
+
 {% endblock %}

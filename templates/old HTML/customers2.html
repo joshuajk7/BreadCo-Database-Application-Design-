@@ -1,0 +1,180 @@
+{% extends "base_header.html" %}
+
+{% block content %}
+
+<div id="customers">     <!-- Iterates through each item in customers for table -->
+  <p>&nbsp;</p>
+  <legend style="font-size:20px"><strong>Customers</strong></legend>
+
+  <table border="1" cellpadding="5">
+    <tr>
+      **This means that there is currently a sale recorded with this customer.
+    </tr>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone Number</th>
+      <th>Street Address</th>
+      <th>City</th>
+      <th>State</th>
+      <th>Zip Code</th>
+      <th><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> <a href="/customers#addCustomer" >New</a></th>
+    </tr>
+
+    {% for customer in customers %}
+    <tr>
+      {% for key in customer.keys() %}  
+        <td align="right">{{ customer[key] }} </td>
+      {% endfor %}
+      {% if customer['customerID'] not in customers_in_sales %}
+        <td><a href="/delete_customers/{{customer['customerID']}}" > <IMG SRC="{{url_for('static', filename='delete_icon.png')}}" width = "25" height = "25">Delete</a></td>
+      {% else %}
+        <td align="middle">**</td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </table> 
+  <br>
+</div> <!-- table for customers --end -->
+
+
+<div id="insert"> <!-- Insert a new customer into the database -->
+  <br>
+  <form method="POST" id="addCustomer" action="/customers#addCustomer">
+    <legend style="font-size:20px"><strong>Add a Customer<IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
+      <fieldset class="fields">
+      <table cellpadding="10">
+        <input type="hidden" name="addCustomer" value="True">
+
+        <tr>
+          <td>
+            <label>Name</label> 
+            <input type="text" name="name" required>
+          </td>
+          <td>
+            <label>Email</label> 
+            <input type="email" name="email" required>
+          </td>
+          <td>
+            <label>Phone Number</label> 
+            <input type="text" name="phoneNumber" required>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label>Street Address</label> 
+            <input type="text" name="streetAddress" required>
+          </td>
+          <td>
+            <label>City</label> 
+            <input type="text" name="city" required>
+          </td>
+          <td>
+            <label>State</label> 
+            <input type="text" name="state" required>
+          </td>
+          <td>
+            <label>Zip Code</label> 
+            <input type="text" name="zipCode" required>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <input type="submit" value ="Add this Customer to the Database">
+          </td>
+        </tr>
+
+      </table>
+      </fieldset> 
+  </form>
+</div> <!-- Insert a Customer -- end -->
+
+
+<div id="update"> <!-- Update a Customer -- end -->
+  <br>
+    <legend style="font-size:20px"><strong>Update a Customer<IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width = "25" height = "25"></strong></legend>
+      <fieldset class="fields">
+      <table cellpadding="10">
+
+      {% if load == false  %}
+        <tr>
+          <form method="POST" id="loadCustomer" action="/customers">
+          <input type="hidden" name="loadCustomer" value="True">
+          <td>
+          <select name="loadedCustomer" id="loadedCustomer">
+            {% for customer in customers %}
+              <option value="{{customer['customerID']}}">{{customer['customerID']}}.{{customer['name']}}</option>
+            {% endfor %}
+          </select>
+          </td>
+          <td>
+            <input type=submit value="Load the Customer">
+          </td>
+          </form>
+        </tr>
+
+      {% else %}
+        <form method="POST" id="updateCustomer" action="/customers#updateCustomer">
+        <tr>
+          <td>
+            <h3> Customer {{load[0]['customerID']}}: {{load[0]['name']}} </h3>
+          </td>
+          <input type="hidden" name="customerID" value={{load[0]['customerID']}}>
+          <input type="hidden" name="updateCustomer" value="True">
+        </tr>
+
+        <tr>
+          <td>
+            <label>Name</label> 
+            <input type="text" name="name" required value="{{load[0]['name']}}">
+          </td>
+          <td>
+            <label>Email</label> 
+            <input type="email" name="email" required value="{{load[0]['email']}}">
+          </td>
+          <td>
+            <label>Phone Number</label> 
+            <input type="text" name="phoneNumber" required value="{{load[0]['phoneNumber']}}">
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label>Street Address</label> 
+            <input type="text" name="streetAddress" required value="{{load[0]['streetAddress']}}">
+          </td>
+          <td>
+            <label>City</label> 
+            <input type="text" name="city" required value="{{load[0]['city']}}">
+          </td>
+          <td>
+            <label>State</label> 
+            <input type="text" name="state" required value="{{load[0]['state']}}">
+          </td>
+          <td>
+            <label>Zip Code</label> 
+            <input type="text" name="zipCode" required value="{{load[0]['zipCode']}}">
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <input type=submit value="Update the Customer">
+          </td>
+        </form>
+
+        <form method="POST" name="cancelUpdate" action="/customers#updateCustomer">
+          <td>
+            <input type="submit" value="Cancel Updating Sale">
+          </td>
+        </tr>
+        </form>
+      {% endif %}
+    </table>
+</div><!-- Update a customer -- end -->
+
+
+{% endblock %}

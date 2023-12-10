@@ -1,0 +1,77 @@
+<html>
+<head>
+<title>Global Bread Co.</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body onload="browsecultures()">
+<h1> 
+  <IMG SRC="Logo.png" width = "85" height = "85"> 
+    Global Bread Co.
+</h1>
+
+[ <a href="home.html">HOME</a> | <a href="bread.html">BREAD PRODUCTS</a> | <a href="customers.html">CUSTOMERS</a> 
+| <a href="sales.html">SALES</a> | <a href="cultures.html">CULTURES</a> | <a href="allergens.html">ALLERGENS</a> ]
+
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all forms</a> </p>
+<table border="1" cellpadding="5">
+  <tr>
+
+    <th></th>
+    <th>id</th>
+    <th>Name</th>
+
+  </tr>
+  <tr>
+    <td><a href="#" onclick="deletecultures('this.CultureID')">Delete</a></td>
+    <td align="right" >1</td>
+    <td >France</td>
+  </tr>
+  <tr>
+    <td><a href="#" onclick="deletecultures('this.CultureID')">Delete</a></td>
+    <td align="right" >2</td>
+    <td >USA</td>
+  </tr>
+  <tr>
+    <td><a href="#" onclick="deletecultures('this.CultureID')">Delete</a></td>
+    <td align="right" >3</td>
+    <td >Iran</td>
+  </tr>
+  <tr>
+    <td><a href="#" onclick="deletecultures('this.CultureID')">Delete</a></td>
+    <td align="right" >4</td>
+    <td >Italy</td>
+  </tr>
+
+</table>
+<p>&nbsp;</p>
+</div> <!-- browse -->
+<div id="insert">
+    <form method="POST" id="addCultures">
+        <legend><strong>Add cultures</strong></legend>
+          <fieldset class="fields">
+            <label> name </label> <input type="text" name="Name">
+      </fieldset>
+          <input class="btn" type="submit" id="addcultures" value="Add culture">
+          <input class="btn" type="button" value="cancel" onClick="browseCulture()">
+	</form> 
+</div><!-- insert -->
+<p>&nbsp;</p>
+
+<div id="delete" style="display: block">
+  <form method="POST" id="deletecultures">
+      <legend><strong>Delete culture</strong></legend>
+          <fieldset class="fields">
+          <p>Are you sure you wish to delete the following?</p>
+          <input type="hidden" name="CultureID" id="deleteCultureID" value="1">
+          <label><strong>ID:</strong></label> 1
+            <label> <strong>Name</strong> </label> France            
+    </fieldset>
+    <input class="btn" type="submit" id="Deletecultures" value="Delete culture">
+          <input class="btn" type="button" value="cancel" onClick="browseCulture()">
+  </form> 
+</div><!-- delete -->
+
+</body>
+</html>

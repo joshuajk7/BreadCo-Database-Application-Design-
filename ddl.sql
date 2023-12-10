@@ -43,10 +43,9 @@ CREATE TABLE cultures (
 CREATE TABLE breadProducts (
   productID INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(45) NOT NULL,
-  unitPrice DECIMAL NOT NULL,
+  unitPrice DECIMAL(10,2) NOT NULL,
   count INT NOT NULL,
-  netWeight DECIMAL NOT NULL,
-  stock INT NOT NULL,
+  netWeight DECIMAL(10,2) NOT NULL,
   cultureID INT NOT NULL,
   PRIMARY KEY (productID),
   FOREIGN KEY (cultureID) references cultures(cultureID) ON DELETE RESTRICT
@@ -58,7 +57,7 @@ CREATE TABLE breadProducts (
 CREATE TABLE sales (
   saleID INT NOT NULL AUTO_INCREMENT,
   customerID INT NOT NULL,
-  saleTotal DECIMAL NOT NULL,
+  saleTotal DECIMAL(10,2) NOT NULL,
   PRIMARY KEY (saleID),
   FOREIGN KEY (customerID) references customers(customerID) ON DELETE RESTRICT
 );
@@ -69,12 +68,12 @@ CREATE TABLE sales (
 CREATE TABLE soldProducts (
   soldProductID INT NOT NULL AUTO_INCREMENT,
   saleID INT NOT NULL,
-  productID INT NOT NULL,
+  productID INT NULL,
   qtySold INT NOT NULL,
-  lineTotal DECIMAL NOT NULL,
+  lineTotal DECIMAL(10,2) NOT NULL,
   PRIMARY KEY (soldProductID),
   FOREIGN KEY (saleID) references sales(saleID) ON DELETE CASCADE,
-  FOREIGN KEY (productID) references breadProducts(productID) ON DELETE CASCADE
+  FOREIGN KEY (productID) references breadProducts(productID) ON DELETE SET NULL
 );
 
 -- -----------------------------------------------------
@@ -91,8 +90,8 @@ CREATE TABLE allergens (
 -- -----------------------------------------------------
 CREATE TABLE allergensProducts (
   allergensProductID INT NOT NULL AUTO_INCREMENT,
-  productID INT NULL,
-  allergenID INT NULL,
+  productID INT NOT NULL,
+  allergenID INT NOT NULL,
   PRIMARY KEY (allergensProductID),
   FOREIGN KEY (productID) references breadProducts(productID) ON DELETE CASCADE,
   FOREIGN KEY (allergenID) references allergens(allergenID) ON DELETE CASCADE
@@ -116,18 +115,19 @@ VALUES
 ('France'),
 ('USA'),
 ('Iran'),
-('Italy');
+('Italy'),
+('Japan');
 
 -- -----------------------------------------------------
 -- DATA: breadProducts
 -- -----------------------------------------------------
-INSERT INTO breadProducts (name, unitPrice, count, netWeight, stock, cultureID) 
+INSERT INTO breadProducts (name, unitPrice, count, netWeight, cultureID) 
 VALUES 
-('Baguette', 4.00, 1, 7.6, 60, (select cultureID from cultures where name = 'France')),
-('Banana Bread', 8.00, 1, 14, 40, (select cultureID from cultures where name = 'USA')),
-('Lavash', 3.00, 8, 9, 100, (select cultureID from cultures where name = 'Iran')),
-('Ciabatta', 8.00, 16, 11, 800, (select cultureID from cultures where name = 'Italy')),
-('Cornbread', 4.00, 16, 14.5, 345, (select cultureID from cultures where name = 'USA'));
+('Baguette', 4.00, 1, 7.6, (select cultureID from cultures where name = 'France')),
+('Banana Bread', 8.00, 1, 14, (select cultureID from cultures where name = 'USA')),
+('Lavash', 3.00, 8, 9, (select cultureID from cultures where name = 'Iran')),
+('Ciabatta', 8.00, 16, 11, (select cultureID from cultures where name = 'Italy')),
+('Cornbread', 4.00, 16, 14.5, (select cultureID from cultures where name = 'USA'));
 
 -- -----------------------------------------------------
 -- DATA: sales

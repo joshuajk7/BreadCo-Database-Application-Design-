@@ -1,43 +1,44 @@
-{% extends "layout.html" %}
+{% extends "base_header.html" %}
 {% block title %} Edit Customer Page{% endblock %}
 
 
 {% block content %}
 
-<form method="POST" id="editCustomerForm" action="{{ url_for('updateCustomer', customerID=customerID) }}">
-    <!-- Display product details -->
-    {% for attribute in customer %}
+<div class="container-fluid mt-4">
+    <form method="POST" id="editCustomerForm" action="{{ url_for('updateCustomer', customerID=customerID) }}">
+        <!-- Display customer details -->
+        {% for attribute in customer %}
+        <label for="customerID"> Customer ID: {{ attribute[0] }} </label>
+        <br><br>
 
-    <br>
-    <label for="customerID"> Customer ID: {{ attribute[0] }} </label>
-    <br><br>
+        <label for="name">Name</label>
+        <input type="text" name="name" value="{{ attribute[1] }}" required> &nbsp;
 
-    <label for="name">Name</label>
-    <input type="text" name="name" value="{{ attribute[1] }}" required>
+        <label for="email">Email</label>
+        <input type="email" name="email" value="{{ attribute[2] }}" required> &nbsp;
 
-    <label for="email">email</label>
-    <input type="email" name="email" value="{{ attribute[2] }}" required>
+        <label for="phoneNumber">Phone Number</label>
+        <input type="tel" name="phoneNumber" value="{{ attribute[3] }}" required> &nbsp;
 
-    <label for="phoneNumber">Phone Number</label>
-    <input type="tel" name="phoneNumber" value="{{ attribute[3] }}" required>
+        <label for="streetAddress">Street Address</label>
+        <input type="text" name="streetAddress" value="{{ attribute[4] }}" required> &nbsp;
 
-    <label for="streetAddress">Street Address</label>
-    <input type="text" name="streetAddress" value="{{ attribute[4] }}" required>
+        <label for="city">City</label>
+        <input type="text" name="city" value="{{ attribute[5] }}" required> &nbsp;
+        
+        <br><br>
 
-    <label for="city">City</label>
-    <input type="text" name="city" value="{{ attribute[5] }}" required>
+        <label for="state">State</label>
+        <input type="text" name="state" value="{{ attribute[6] }}" required> &nbsp;
 
-    <label for="state">State</label>
-    <input type="text" name="state" value="{{ attribute[6] }}" required>
+        <label for="zipCode">Zip Code</label>
+        <input type="text" name="zipCode" value="{{ attribute[7] }}" required> &nbsp;&nbsp;
+        {% endfor %}
 
-    <label for="zipCode">zipCode</label>
-    <input type="text" name="zipCode" value="{{ attribute[7] }}" required> 
-
-    {% endfor %}
-
-    <br><br>
-
-    <input type="submit" value="Update Customer">
-</form>
+        <input type="submit" value="Update Customer" class="btn btn-outline-success">
+        &nbsp;&nbsp;&nbsp;
+        <a href="/customers" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>
 
 {% endblock %}
