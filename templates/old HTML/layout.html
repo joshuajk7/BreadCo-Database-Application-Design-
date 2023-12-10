@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    {% block head %}
+    <title>{% block title %}{% endblock %} - CS340 Flask Bread Co App</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    {% for myscript in jsscripts %}
+    <script src="/static/{{myscript}}"></script>
+    {% endfor %}
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/static/style/style.css">
+    <div class="topnav">
+      <a href="/index">Index</a>
+      <a href="/breadProducts">Bread Products</a>
+      <a href="/allergens">Allergens</a>
+      <a href="/cultures">Cultures</a>
+      <a href="/sales">Sales</a>
+      <a href="/customers">Customers</a>
+    </div>
+    {% endblock %}
+</head>
+<body>
+	 <div id="content">{% block content %}{% endblock %}</div>
+</body>
+</html>

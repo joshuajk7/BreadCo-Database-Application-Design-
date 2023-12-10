@@ -1,14 +1,20 @@
 <html>
 <head>
+<!-- 
+# Citation for Bootstrap:
+# Date: 12/9/2023
+# Taken from Bootstrap Website
+# Use: Framework for CSS design and styling
+# Source URL: https://getbootstrap.com/docs/5.3/getting-started/introduction/
+-->
 
-<!-- Citation: Bootstrap-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
 <style>
-  /* Background Color for navbar */
+  /* Background Color for navbar and background */
   .navbar-custom {
     background-color: #FFEAD7;
   } 
@@ -16,43 +22,27 @@
     background-color: #FAFCFF;
   }
 
-  #free-table {
-    border: 0!important;
-    tr:nth-child(odd){
-      background-color:None!important;
-    }
-  }
-
+  /* Table Styling + Unofficial Tables */
   table {
     border: 1px solid;
   }
-
   table, th, tr, td {
   border-bottom: 1px solid;
   border-top: 1px solid;
   border-collapse: collapse;
-  padding: 8px;
+  padding: 6px;
   }
-
   th{
     background-color: #efc49ec7;
   }
-
   tr:nth-child(odd) {
     background-color: #ffead755;
   }
-
-
 </style>
 
-
 <title>Global Bread Co.</title>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-{% for myscript in jsscripts %}
-<script src="/static/{{myscript}}"></script>
-{% endfor %}
 
-
+<!-- Navigation Bar -->
 <nav class= "navbar navbar-expand-xl navbar-custom">
   <div class="container-fluid">
     <a class="navbar-brand" href="{{ url_for('home')}}">
@@ -76,14 +66,16 @@
 </nav>
 
 </head>
+
 <body class=bg-custom>
 {% block content %} {% endblock %}
 
+<!-- Footer -->
 <div class="container-fluid mt-4"
   <footer>
     <p>Copyright 	&#169;2023; Developed by Thong Thomas Nguyen and Joshua Kim</p>
   </footer>
-</div>
+</div> <!-- Footer-end -->
 
 </body>
 </html>

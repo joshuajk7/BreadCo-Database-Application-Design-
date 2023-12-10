@@ -1,21 +1,8 @@
 -- -------------------------------------------
--- FIND FOR DROP DOWN
+-- READ/SELECT
 -- -------------------------------------------
 
--- Find productID and name for Bread Products dropdown
-SELECT productID, name FROM breadProducts; 
-
--- Find saleID for sales drop down
-SELECT saleID from sales;
-
--- Find customerID for Customer dropdown
-SELECT customerID from customers;
-
--- -------------------------------------------
--- READ
--- -------------------------------------------
-
--- Get all data for breadProducts table (added LEFT JOIN so no data point is missing.)
+-- Get all data for displaying breadProducts table (added LEFT JOIN so no data point is missing.)
 SELECT breadProducts.productID, breadProducts.name, breadProducts.unitPrice, breadProducts.count, 
 breadProducts.netWeight, breadProducts.stock, cultures.name as Culture,
 group_concat(allergens.name ORDER BY allergens.name SEPARATOR ', ') as "Allergen(s)"
@@ -25,7 +12,31 @@ LEFT JOIN allergensProducts on breadProducts.productID = allergensProducts.produ
 LEFT JOIN allergens on allergensProducts.allergenID = allergens.allergenID
 Group by breadProducts.productID;
 
--- Get all data for allergensProducts
+-- Get cultures query for breadProducts table
+SELECT cultureID, name FROM cultures;
+
+-- Get next incrementable productID for allergensTable
+SELECT MAX(productID) from breadProducts;
+
+-- Retrieve product details using productID
+SELECT * FROM breadProducts WHERE productID = :selectedEditProductID;
+
+-- Retrieve allergens for the product
+SELECT allergenID FROM allergensProducts WHERE productID = :selectedEditProductID;
+
+-- Retrieve all allergens
+SELECT allergenID, name FROM allergens;
+
+-- Retrieve all cultures
+SELECT * FROM cultures;
+
+-- Retrieve culture for the product
+SELECT cultureID FROM breadProducts WHERE productID = :selectedEditProductID;
+
+-- Retrieve all cultureIDs present in a product
+SELECT cultureID FROM breadProducts;
+
+-- Get all data for displaying allergensProducts
 SELECT allergensProducts.allergensProductID, breadProducts.name as "Bread Product", allergens.name as Allergen
 FROM allergensProducts
 LEFT JOIN breadProducts ON breadProducts.productID = allergensProducts.productID
@@ -39,45 +50,43 @@ LEFT JOIN customers ON sales.customerID = customers.customerID
 LEFT JOIN soldProducts ON sales.saleID = soldProducts.saleID
 Group by sales.saleID;
 
--- Get all data for sold Products
+-- Retrieve customer name for sales
+SELECT customerID, name from customers;
+
+-- Retrieve product name for sales
+SELECT productID, name from breadProducts;
+
+-- Retrieve unit price from breadProducts for calculating lineTotal in sales
+SELECT unitPrice from breadProducts WHERE productID = :selectedSaleProductID
+
+-- Retrieve incrementer saleID for soldProducts
+SELECT MAX(saleID) from sales;
+
+-- Retrieve sale details
+SELECT * FROM sales WHERE saleID = :selectedEditSaleID;
+
+-- Retrieve soldProducts for the sale
+SELECT * FROM soldProducts WHERE saleID = :selectedEditSaleID;
+
+-- Get all data for soldProducts
 SELECT soldProducts.soldProductID, sales.saleID, breadProducts.name as "Product Name",  soldProducts.qtySold, soldProducts.lineTotal
 FROM soldProducts
 LEFT JOIN breadProducts on breadProducts.productID = soldProducts.productID
 LEFT JOIN sales on sales.saleID = soldProducts.saleID
 GROUP by soldProducts.soldProductID;
 
--- Get all data for customers
-SELECT CustomersID, name, email, phoneNumber, streetAddress, city, state, zipCode FROM Customers;
-Or SELECT * FROM Customers;
+-- Get all data for displaying customers table
+SELECT * FROM customers;
 
--- Get all data for allergens
-SELECT AllergensID, name FROM Allergens; 
+-- Get customerIDs associated with sales for key-constraints
+SELECT customerID FROM sales;
 
--- get all data for cultures
-SELECT CulturesID, name from Cultures;
+-- Retrieve customer details using customerID
+SELECT * FROM customers where customerID= :selectedEditCustomerID;
 
--- -------------------------------------------
--- SEARCH
--- -------------------------------------------
+-- Get all data for displaying allergens
+SELECT * FROM allergens; 
 
--- Search for breadProduct (Search BOX)
-SELECT breadProducts.productID, breadProducts.name, breadProducts.unitPrice, breadProducts.count, 
-breadProducts.netWeight, breadProducts.stock, cultures.name as Culture,
-group_concat(allergens.name ORDER BY allergens.name SEPARATOR ', ') as "Allergen(s)"
-FROM breadProducts
-INNER JOIN cultures on breadProducts.cultureID = cultures.cultureID
-LEFT JOIN allergensProducts on breadProducts.productID = allergensProducts.productID
-LEFT JOIN allergens on allergensProducts.allergenID = allergens.allergenID
-Where breadProduct.name = :breadnameInput
-Group by breadProducts.productID;
-
--- Search for Sale (Search BOX)
-SELECT sales.saleID, customers.name as Customer, sum(soldProducts.lineTotal) as "Sale Total"
-FROM sales
-LEFT JOIN customers ON sales.customerID = customers.customerID
-LEFT JOIN soldProducts ON sales.saleID = soldProducts.saleID
-Where sales.saleID = :saleIDInput
-Group by sales.saleID;
 
 -- -------------------------------------------
 -- CREATE/ADD
@@ -91,13 +100,13 @@ VALUES (:breadnameInput, :unitPriceInput, :countInput, :netWeightInput, :netstoc
 INSERT INTO allergensProduct(productID, allergenID)
 VALUES (:productIDInput, :allergenIDInput);
 
--- Add Sale (minus sale total)
-INSERT INTO sales(customerID)
-VALUES (:customerIDInput);
+-- Add Sale to sales table
+INSERT INTO sales(customerID, saleTotal)
+VALUES (:customerIDInput, :saleTotalCalc);
 
--- Part of Adding Sale - Adding Sold Products to the Intersection Table
+-- Add products to soldProducts intersection table
 INSERT INTO soldProducts(saleID, productID, qtySold, lineTotal)
-Values (:saleIDInput, productIDInput, qtySoldInput, lineTotalInput);
+Values (:saleIDInput, :productIDInput, :qtySoldInput, :lineTotalInput);
 
 -- Add Customer
 INSERT INTO `customers` (`customerID`, `name`, `email`, `phoneNumber`, `streetAddress`, `city`, `state`, `zipCode`) 
@@ -111,6 +120,7 @@ VALUES (:allergenIDInput);
 INSERT INTO cultures(name)
 VALUES ( :cultureIDInput);
 
+
 -- -------------------------------------------
 -- UPDATE
 -- -------------------------------------------
@@ -120,63 +130,41 @@ UPDATE breadProducts SET name=:breadnameInput, unitPrice=:unitPriceInput, count=
 stock=:netstockInput, cultureID:cultureIDInput
 WHERE id=:productID_from_dropdown;
 
--- Part of Update Bread Product - Adding Allergens to the Intersection Table
-UPDATE allergensProduct SET allergenID=:allergenIDInput
-WHERE id = :productID_from_dropdown;
-
 -- Update Sale
-UPDATE sales SET customer=:customerIDInput
-WHERE id=:saleID_from_dropdown;
+UPDATE sales SET customer= :customerIDInput
+WHERE saleID= :saleID_from_dropdown;
 
--- Update Sale -- Adding SaleID, Product Name, Quatnity Sold, Line Total to Interesection table
-UPDATE sales SET productID=:productIDInput, qtySold=:qtySoldInput, lineTotal=:lineTotalInput
-WHERE id=:saleID_from_dropdown;
+-- Update products to soldProducts intersection table
+UPDATE soldProducts SET productID= :productIDInput, qtySold= :qtySoldInput, lineTotal= :lineTotalInput 
+WHERE soldProductID= :selectedUpdateSoldProductID;
 
 -- Update customers
-onclick="update_Customers('pid')"
-SELECT CustomersID, name, email, phoneNumber, streetAddress, city, state, zipCode 
-FROM Customers
-WHERE pid = :CustomersID_selected_from_browse_Customers_page;
+UPDATE customers 
+SET name= :nameInput, email= :emailInput, phoneNumber= :phoneInput, streetAddress= :streetInput, city= :cityInput, state= :stateInput, zipCode= :zipInput 
+WHERE customerID= :selectedUpdateCustomersID
 
--- Update allergens
-onclick="update_Allergens('pid')" 
-SELECT AllergensID, Name
-FROM Allergens 
-WHERE pid = :AllergensID_selected_from_browse_allergens_page;
-
--- Update cultures
-onclick="update_Cultures('pid')" 
-SELELCT CulturesID, Name
-FROM Cultures 
-WHERE pid = :CulturesID_selected_from_browse_Cultures_page;
 
 -- -------------------------------------------
 -- DELETE
 -- -------------------------------------------
 
 -- Delete Bread Product 
-DELETE FROM breadProduct WHERE id=:productID_from_dropdown;
-
--- Delete Bread Product's connections to M:N (soldProducts)
-DELETE FROM soldProducts WHERE productID=:productID_from_dropdown;
+DELETE FROM breadProduct WHERE id= :deleteBreadProductID;
 
 -- Delete Bread Product's connections to M:N (allergensProducts)
-DELETE FROM allergensProduct WHERE productID=:productID_from_dropdown;
+DELETE FROM allergensProducts WHERE productID=:productID_from_dropdown;
 
--- Delete Sales
-DELETE FROM saleID WHERE saleID=:saleID_from_dropdown;
+-- Delete Sale
+DELETE FROM saleID WHERE saleID= :deleteSaleID;
 
 -- Delete Sale's Connection to M:N (soldProducts)
 DELETE FROM soldProducts WHERE saleID=:saleID_from_dropdown;
 
 -- Delete customer
-onclick="delete_Customers('pid')" 
-DELETE FROM Customers WHERE pid = :CustomersID_selected_from_browse_Customers_page;
+DELETE FROM customers WHERE customerID = :deleteCustomerID;
 
 -- Delete allergen
-onclick="delete_Allergens('pid')" 
-DELETE FROM Allergens WHERE pid = :AllergensID_selected_from_browse_allergens_page;
+DELETE FROM allergens WHERE allergenID = :deleteAllergenID;
 
 -- Delete culture
-onclick="delete_Cultures('pid')" 
-DELETE FROM CulturesWHERE pid = :CulturesID_selected_from_browse_Cultures_page;
+DELETE FROM cultures WHERE cultureID= :deleteCultureID;

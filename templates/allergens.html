@@ -5,20 +5,20 @@
 {% block content %} 
 
 <script>
+    // JS function used to delete the allergen through pop-up OK & Cancel
      function deleteAllergen(allergenID) {
       if (confirm("Are you sure you want to delete this allergen?")) {
-          // Make an AJAX request to the server to delete the allergen
+          // JS script to the server to delete the allergen
           var xhr = new XMLHttpRequest();
           
           xhr.onreadystatechange = function() {
               if (xhr.readyState === XMLHttpRequest.DONE) {
                   if (xhr.status === 200) {
-                      // Successful response from the server
+                      // Allergen deletion was successful
                       alert("Allergen successfully deleted");
-                      // You might want to reload the page or update the UI here
-                      location.reload(); // This reloads the page; you can replace it with more sophisticated UI updates
-                  } else {
-                      // Handle error response from the server
+                      // Reload the same page after
+                      location.reload();
+                      // Allergen deletion error
                       alert("Error deleting allergen");
                   }
               }
@@ -30,6 +30,7 @@
   }
 </script>
 
+<!-- (Read) Allergens Table -->
 <div class="container-fluid mt-4">
     <h2>Allergens</h2>
     <table>
@@ -46,8 +47,9 @@
         </tr>
         {% endfor %}
     </table>
-</div>
+</div> <!-- (Read) Allergens Table: end -->
 
+<!-- (Read) AllergensProducts Table -->
 <div class="container-fluid mt-4">
     <h2> Allergens in Products </h2>
     <table style="background:#FAFCFF;">
@@ -64,19 +66,19 @@
         </tr>
         {% endfor %}
     </table>
-</div>
+</div> <!-- (Read) AllergensProducts Table: end -->
 
-<!--Form to add a new allergen-->
+<!-- (Create) Add a new allergen-->
 <div class="container-fluid mt-4">
     <form method="POST" id="addAllergen" action= "/allergens">
         <legend><strong> Add Allergen <IMG SRC = "{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
             <fieldset class="fields">
                 <label for="name"> Name </label> <input type="text" name="name" required>
-
             </fieldset>
             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
             <input class="btn btn-outline-primary mt-1" type="submit" id="addAllergen" value="Add allergen">
             <a href="/allergens#" class="btn btn-outline-secondary mt-1">Back to Top</a>
     </form>
-</div>
+</div> <!-- (Create) Add new allergen: end -->
+
 {% endblock %}

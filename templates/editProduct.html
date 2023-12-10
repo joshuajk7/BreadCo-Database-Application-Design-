@@ -41,15 +41,12 @@
         </select>
         
         <br><br>
+        
         <!-- Display allergens with checkboxes -->
         <label>Allergen(s) </label><br>
         {% for allergen in all_allergens %}
-
             <label>ID:{{ allergen[0] }} </label>
-
             <input type="checkbox" name="allergens[]" value="{{ allergen[0] }}" {% if (allergen[0],) in selected_allergens %} checked {% endif %}>
-            <!-- allergen[0] -> int:  and  select_allergens[0] = (int,)     so must match by (allergens[0])-->
-
             <label>{{ allergen[1] }}</label><br>
         {% endfor %}
         <br>

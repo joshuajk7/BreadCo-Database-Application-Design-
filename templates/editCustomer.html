@@ -6,7 +6,7 @@
 
 <div class="container-fluid mt-4">
     <form method="POST" id="editCustomerForm" action="{{ url_for('updateCustomer', customerID=customerID) }}">
-        <!-- Display product details -->
+        <!-- Display customer details -->
         {% for attribute in customer %}
         <label for="customerID"> Customer ID: {{ attribute[0] }} </label>
         <br><br>

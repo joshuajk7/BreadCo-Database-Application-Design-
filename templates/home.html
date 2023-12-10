@@ -1,12 +1,19 @@
 {% extends "base_header.html" %}
 
 {% block content %}
+
 <div class="container-fluid mt-4">
   <h2> Home </h2>
   <p> Welcome to the home page. Here is the administrator database view of the Global Bread Company. Here you can may view our <br>products sold, customers, 
   sales and their details, bread origins, and the allergens in the bread. Check the index below for what's available.</p>
 
-
+  <!--
+  # Citation for Home Bread.gif:
+  # Date: 11/16/2023
+  # Taken from imgflip
+  # Use: Decoration for Home Page
+  # Source URL: https://imgflip.com/gif/73kk6u
+  -->
   <IMG SRC="{{url_for('static', filename='Home Bread.gif')}}">
    
   <br> <br>
@@ -18,6 +25,7 @@
   <li><a href="/allergens">Allergens</a> - Create, Read, and Delete Allergens | Read AllergensProducts (Intersection)</li>
   <br>
 
+  <!-- Reset Database -->
   <form method="POST" id="databaseReset" action="/database">
     <button type="submit" class="btn btn-warning">Reset the Database</button>
   </form>

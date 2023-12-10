@@ -4,11 +4,12 @@
 {% block content %}
 <script>
   function addProductRow() {
+    // JS function to add a Product row for a Sale
     console.log("Adding product row");
     const tableBody = document.querySelector('#productTable tbody');
     const newRow = document.createElement('tr');
 
-    // Product dropdown
+    // Product name dropdown for each row
     const productCell = document.createElement('td');
     const productSelect = document.createElement('select');
     productSelect.name = 'products[]';
@@ -17,7 +18,7 @@
     {% endfor %}
     productCell.appendChild(productSelect);
 
-    // Quantity input
+    // Quantity input for each row
     const quantityCell = document.createElement('td');
     const quantityInput = document.createElement('input');
     quantityInput.type = 'number';
@@ -26,7 +27,7 @@
     quantityInput.required = true;
     quantityCell.appendChild(quantityInput);
 
-    // Delete button
+    // Delete button for each row
     const deleteCell = document.createElement('td');
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
@@ -36,7 +37,7 @@
     };
     deleteCell.appendChild(deleteButton);
 
-    // Append cells to the new row
+    // Creation of the new row
     newRow.appendChild(productCell);
     newRow.appendChild(quantityCell);
     newRow.appendChild(deleteCell);
@@ -47,18 +48,18 @@
 
   function deleteSale(saleID) { 
       if (confirm("Are you sure you want to delete this sale?")) {
-          // Make an AJAX request to the server to delete the sale
+          // JS server request to delete the sale
           var xhr = new XMLHttpRequest();
           
           xhr.onreadystatechange = function() {
               if (xhr.readyState === XMLHttpRequest.DONE) {
                   if (xhr.status === 200) {
-                      // Successful response from the server
+                      // Successful deletion of sale
                       alert("Sale successfully deleted");
-                      // You might want to reload the page or update the UI here
-                      location.reload(); // This reloads the page; you can replace it with more sophisticated UI updates
+                      // Redirect to same page
+                      location.reload(); 
                   } else {
-                      // Handle error response from the server
+                      // Error deleting the sale
                       alert("Error deleting sale");
                   }
               }
@@ -70,12 +71,13 @@
   }
   
   function editSale(saleID) {
-        // Redirect to the editProduct route with the specified productID
+        // JS function to redirect to edit form with pre-populated sale information
         window.location.href = "/editSale/" + saleID;
     }
 
 </script>
 
+<!-- (Read) Sales -->
 <div class="container-fluid mt-4">
   <h2>Sales</h2>
   <table>
@@ -86,8 +88,6 @@
       <th><a href="/sales#addSale" class="btn btn-outline-primary"><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> New</a></th>
       <th></th>
     </tr>
-
-    <!-- Iterates through each item in sales -->
     {% for sale in sales %}
     <tr align="middle">
         <td>{{ sale[0] }} </td>
@@ -98,12 +98,11 @@
     </tr>
     {% endfor %}
   </table>
-</div> <!-- sales --end -->
+</div> <!-- (Read) Sales: end -->
 
-
+<!-- (Read) Sold Products -->
 <div class="container-fluid mt-4">
     <h2>Sold Products</h2>
-    <!-- Header for soldProducts Table -->
       <table>
         <tr>
           <th>ID</th>
@@ -112,7 +111,7 @@
           <th>Quantity Sold</th>
           <th>Line Total</th>
         </tr>
-        <!-- Iterates through each item in soldProducts -->
+
         {% for sold in soldProducts %}
         <tr align="middle">
             <td>{{ sold[0] }} </td>
@@ -123,9 +122,9 @@
         </tr>
         {% endfor %}
       </table>
-</div> <!-- soldProducts -- end -->
+</div> <!-- (Read) Sold Products: end -->
 
-
+<!-- (Create) Add a Sale & SoldProducts Form -->
 <div class="container-fluid mt-4">
   <form method="POST" name="addSale" id="addSale" action="/sales#addSale">
     <legend style="font-size:20px"><strong>Add a Sale<IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
@@ -153,7 +152,7 @@
       <button type="submit" class="btn btn-outline-primary">Submit Sale</button>
       <a href="/sales#" class="btn btn-outline-secondary mt-1">Back to Top</a>
   </form>
-</div><!-- insert -- end -->
+</div> <!-- (Create) Add a Sale & SoldProducts Form: end -->
 
 
 
