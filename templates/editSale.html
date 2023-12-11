@@ -1,3 +1,8 @@
+<!--
+# Originality:
+# All CRUD and queries for all routes, and everything else that is not listed in the citations.
+-->
+
 {% extends "base_header.html" %}
 {% block title %} Edit Sale Page {% endblock %}
 
@@ -6,7 +11,7 @@
 
 <div class="container-fluid mt-4"
     <br>
-    <legend style="font-size:20px"><strong>Edit Sale Number {{ sale[0] }} <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width="25" height="25"></strong></legend>
+    <legend style="font-size:20px"><strong>Edit Sale ID: {{ sale[0] }} <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width="25" height="25"></strong></legend>
     <form method="POST" id="editSaleForm" action="{{ url_for('updateSale', saleID=saleID) }}">
     
     <!-- Display customer as a dropdown -->
@@ -21,7 +26,7 @@
     <table>
         <thead>
             <tr>
-                <th>soldProduct ID</th>
+                <th>soldProductID</th>
                 <th>Product Name</th>
                 <th>Quantity Sold</th>
             </tr>
@@ -44,7 +49,7 @@
         </tbody>
     </table>
 
-    <input type="submit" value="Update Product" class="btn btn-outline-success"> 
+    <input type="submit" value="Update Sale" class="btn btn-outline-success"> 
     &nbsp;&nbsp;&nbsp;
     <a href="/sales" class="btn btn-outline-secondary">Cancel</a>
   </form>

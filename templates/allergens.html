@@ -1,3 +1,8 @@
+<!--
+# Originality:
+# All CRUD and queries for all routes, and everything else that is not listed in the citations.
+-->
+
 {% extends "base_header.html" %}
 {% block title %} Allergens Page {% endblock %}
 
@@ -13,11 +18,12 @@
           
           xhr.onreadystatechange = function() {
               if (xhr.readyState === XMLHttpRequest.DONE) {
-                  if (xhr.status === 200) {
+                    if (xhr.status === 200) {
                       // Allergen deletion was successful
                       alert("Allergen successfully deleted");
                       // Reload the same page after
                       location.reload();
+                    } else {
                       // Allergen deletion error
                       alert("Error deleting allergen");
                   }
@@ -30,6 +36,14 @@
   }
 </script>
 
+<!--
+Citation for Flask Starter Guide:
+Date: 11/16/2023
+Adapted from Starter Guide
+Use: Recongiured Template for the HTML for Tables
+Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
+-->
+
 <!-- (Read) Allergens Table -->
 <div class="container-fluid mt-4">
     <h2>Allergens</h2>
@@ -37,7 +51,7 @@
         <tr align="middle">
             <th>ID</th>
             <th>Name</th>
-            <th > <a href="/allergens#addAllergen" class="btn btn-outline-primary"><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> New</a></th>
+            <th > <a href="/allergens#addAllergen" class="btn btn-outline-primary"><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> Add</a></th>
         </tr>
         {% for item in allergens %}
         <tr align="middle">

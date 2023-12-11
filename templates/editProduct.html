@@ -1,3 +1,8 @@
+<!--
+# Originality:
+# All CRUD and queries for all routes, and everything else that is not listed in the citations.
+-->
+
 {% extends "base_header.html" %}
 {% block title %} Bread Products Page{% endblock %}
 
@@ -7,24 +12,21 @@
     <form method="POST" id="editProductForm" action="{{ url_for('updateProduct', productID=productID) }}">
         <!-- Display product details -->
         {% for attribute in product %}
-
-        <label for="productID"> Product ID: {{ attribute[0] }} </label>
+        
+        <legend style="font-size:20px"><strong>Edit Product ID: {{ attribute[0] }} <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width="25" height="25"></strong></legend>
         <br><br>
 
         <label for="name">Name</label>
         <input type="text" name="name" value="{{ attribute[1] }}" required> &nbsp;
 
         <label for="unitPrice">Unit Price ($)</label>
-        <input type="text" name="unitPrice" value="{{ attribute[2] }}" required> &nbsp;
+        <input type="number" name="unitPrice" step="0.01" min="0.01" value="{{ attribute[2] }}" required> &nbsp;
 
         <label for="count">Count</label>
-        <input type="text" name="count" value="{{ attribute[3] }}" required> &nbsp;
+        <input type="number" name="count" value="{{ attribute[3] }}" required> &nbsp;
 
         <label for="netWeight">Net Weight (oz)</label>
-        <input type="text" name="netWeight" value="{{ attribute[4] }}" required> &nbsp;
-
-        <label for="stock">Stock</label>
-        <input type="text" name="stock" value="{{ attribute[5] }}" required> &nbsp;
+        <input type="number" name="netWeight" step="0.01" min="0.01" value="{{ attribute[4] }}" required> &nbsp;
 
         {% endfor %}
 

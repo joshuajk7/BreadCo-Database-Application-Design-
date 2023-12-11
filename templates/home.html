@@ -1,6 +1,27 @@
+<!--
+# Originality:
+# All CRUD and queries for all routes, and everything else that is not listed in the citations.
+-->
+
 {% extends "base_header.html" %}
 
 {% block content %}
+
+<!--
+# Citation for Bootstrap Alert:
+# Date: 12/9/2023
+# Taken from Bootstrap Website
+# Use: Used for alert flash messages
+# Source URL: https://getbootstrap.com/docs/5.3/components/alerts/#dismissing
+-->
+
+<!-- Flashes a pop-up notification to say that the database is reset.-->
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  {{ message }} 
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+</div>
+{% endfor %}
 
 <div class="container-fluid mt-4">
   <h2> Home </h2>
@@ -14,6 +35,7 @@
   # Use: Decoration for Home Page
   # Source URL: https://imgflip.com/gif/73kk6u
   -->
+
   <IMG SRC="{{url_for('static', filename='Home Bread.gif')}}">
    
   <br> <br>

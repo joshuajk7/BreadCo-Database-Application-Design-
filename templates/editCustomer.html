@@ -1,3 +1,8 @@
+<!--
+# Originality:
+# All CRUD and queries for all routes, and everything else that is not listed in the citations.
+-->
+
 {% extends "base_header.html" %}
 {% block title %} Edit Customer Page{% endblock %}
 
@@ -8,7 +13,7 @@
     <form method="POST" id="editCustomerForm" action="{{ url_for('updateCustomer', customerID=customerID) }}">
         <!-- Display customer details -->
         {% for attribute in customer %}
-        <label for="customerID"> Customer ID: {{ attribute[0] }} </label>
+        <legend style="font-size:20px"><strong>Edit Customer ID: {{ attribute[0] }} <IMG SRC="{{url_for('static', filename='edit_icon.png')}}" width="25" height="25"></strong></legend>
         <br><br>
 
         <label for="name">Name</label>

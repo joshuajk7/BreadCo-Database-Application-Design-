@@ -152,13 +152,13 @@ WHERE customerID= :selectedUpdateCustomersID
 DELETE FROM breadProduct WHERE id= :deleteBreadProductID;
 
 -- Delete Bread Product's connections to M:N (allergensProducts)
-DELETE FROM allergensProducts WHERE productID=:productID_from_dropdown;
+DELETE FROM allergensProducts WHERE productID= :deleteAllergensProductID;
 
 -- Delete Sale
 DELETE FROM saleID WHERE saleID= :deleteSaleID;
 
 -- Delete Sale's Connection to M:N (soldProducts)
-DELETE FROM soldProducts WHERE saleID=:saleID_from_dropdown;
+DELETE FROM soldProducts WHERE saleID= :deleteSaleID;
 
 -- Delete customer
 DELETE FROM customers WHERE customerID = :deleteCustomerID;

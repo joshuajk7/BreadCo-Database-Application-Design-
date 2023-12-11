@@ -1,3 +1,8 @@
+<!--
+# Originality:
+# All CRUD and queries for all routes, and everything else that is not listed in the citations.
+-->
+
 {% extends "base_header.html" %}
 {% block title %} cultures Page {% endblock %}
 
@@ -31,15 +36,23 @@
   }
 </script>
 
+<!--
+Citation for Flask Starter Guide:
+Date: 11/16/2023
+Adapted from Starter Guide
+Use: Recongiured Template for the HTML for Tables
+Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
+-->
+
 <!-- (Read) Cultures Table -->
 <div class="container-fluid mt-4">
     <h2>Cultures</h2>
     <table >
-        **** Culture present in Product (restricted deletion)
+        **** A culture present in bread products may not be deleted.
         <tr align="middle">
             <th>ID</th>
             <th>Name</th>
-            <th><a href="/cultures#addCulture" class="btn btn-outline-primary"><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> New</a></th>
+            <th><a href="/cultures#addCulture" class="btn btn-outline-primary"><IMG SRC="{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"> Add</a></th>
         </tr>
         {% for item in cultures %}
         <tr align="middle">
@@ -58,7 +71,7 @@
 <!--(Create) Form to add a new culture-->
 <div class="container-fluid mt-4">
     <form method="POST" id="addCulture" action= "/cultures">
-        <legend><strong> Add culture <IMG SRC = "{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
+        <legend><strong> Add Culture <IMG SRC = "{{url_for('static', filename='new_icon.png')}}" width = "25" height = "25"></strong></legend>
             <fieldset class="fields">
                 <label for="name"> Name </label> <input type="text" name="name" required>
             </fieldset>

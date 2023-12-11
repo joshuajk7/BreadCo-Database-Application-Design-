@@ -14,10 +14,16 @@ Adapted from db_connector in Starter App
 Use: Reconfigured for the current database.
 Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
 
+Citation for Flask Starter Guide:
+Date: 11/16/2023
+Adapted from Starter Guide
+Use: Used as Template for the HTML for Tables
+Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
+
 Citation for Flask Starter file:
 Date: 11/16/2023
 Adapted from Starter App Guide
-Use: Starter Layout from the GitHub for routing and pages.
+Use: Starter Layout from the GitHub for routing and pages; wsgi.py gunicorn form.
 Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
 
 Citation for Bootstrap:
@@ -25,6 +31,18 @@ Date: 12/9/2023
 Taken from Bootstrap Website
 Use: Framework for CSS design and styling
 Source URL: https://getbootstrap.com/docs/5.3/getting-started/introduction/
+
+Citation for Bootstrap Alert:
+Date: 12/9/2023
+Taken from Bootstrap Website
+Use: Used for alert flash messages
+Source URL: https://getbootstrap.com/docs/5.3/components/alerts/#dismissing
+
+Citation for database() route:
+Date: 12/05/2023
+Adapted from stackoverflow.com
+Use: Root Directory access to open database ddl source file for reading
+Source URL: https://stackoverflow.com/questions/14825787/flask-how-to-read-a-file-in-application-root
 
 Citation for delete_icon.png:
 Date: 11/16/2023

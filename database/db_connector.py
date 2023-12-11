@@ -6,10 +6,10 @@ import MySQLdb as mariadb
 # Use: Reconfigured for the current database.
 # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app
 
-host = 'localhost'
-user = 'root'                                  
-passwd = ''                     
-db = 'project_sample'
+host = ''
+user = ''                                  
+passwd = ''                        
+db = ''
 
 def connect_to_database(host = host, user = user, passwd = passwd, db = db):
     '''
